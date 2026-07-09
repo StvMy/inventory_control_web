@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Table</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a5c2a;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* ── Header ── */
+        .header {
+            background-color: #145221;
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #2e8b4a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header-icon {
+            width: 42px;
+            height: 42px;
+            background: #2e8b4a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-icon svg { width: 24px; height: 24px; fill: #fff; }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .header p {
+            font-size: 12px;
+            color: #a8d5b5;
+            margin-top: 2px;
+        }
+
+        /* ── Back Button ── */
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            color: #1a5c2a;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 13px 28px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
+        .btn-back:hover {
+            background: #e6f5ea;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+        }
+        .btn-back:active { transform: scale(0.97); }
+        .btn-back svg { width: 18px; height: 18px; fill: #1a5c2a; }
+
+        /* ── Main ── */
+        .main {
+            max-width: 1200px;
+            margin: 36px auto;
+            padding: 0 20px 60px;
+        }
+
+        /* ── Tab menu ── */
+        .tab-menu {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 0;
+        }
+        .tab-btn {
+            padding: 11px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            background: #145221;
+            color: #a8d5b5;
+            transition: background 0.2s, color 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .tab-btn:hover { background: #1f7035; color: #fff; }
+        .tab-btn.active {
+            background: #fff;
+            color: #1a5c2a;
+        }
+
+        /* ── Tab content panel ── */
+        .tabcontent {
+            background: #fff;
+            border-radius: 0 12px 12px 12px;
+            padding: 32px 36px;
+            color: #1a3d22;
+            overflow-x: auto;
+        }
+        .tabcontent h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a5c2a;
+            margin-bottom: 16px;
+        }
+        .tabcontent h3 {
+            color: #5a8a67;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        /* ── Search input ── */
+        .search-bar {
+            width: 100%;
+            max-width: 360px;
+            padding: 9px 14px 9px 36px;
+            border: 1.5px solid #b5d6bf;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #1a3d22;
+            background: #f5fbf7 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='%235a8a67'%3E%3Cpath d='M21 19l-4.35-4.35A7 7 0 1 0 5 17a7 7 0 0 0 9.65-1.35L19 21l2-2zM7 16A5 5 0 1 1 12 11 5 5 0 0 1 7 16z'/%3E%3C/svg%3E") no-repeat 12px center;
+            outline: none;
+            margin-bottom: 20px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-bar:focus {
+            border-color: #2e8b4a;
+            box-shadow: 0 0 0 3px rgba(46,139,74,0.12);
+            background-color: #fff;
+        }
+
+        /* ── Tables ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            border: 1px solid #000000;
+        }
+        thead tr {
+            background: #1a5c2a;
+            color: white;
+        }
+        thead th {
+            padding: 11px 14px;
+            text-align: left;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+        tbody tr {
+            border-bottom: 1px solid #000000;
+            transition: background 0.15s;
+        }
+        tbody tr:hover { background: #f0f9f3; }
+
+        thead th,
+        tbody td,
+        tbody th {
+            border: 1px solid #000000;
+            padding: 9px 14px;
+        }
+
+        /* readonly inputs inside table cells */
+        tbody td input[type="text"] {
+            background: transparent;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #1a3d22;
+            width: 100%;
+            min-width: 80px;
+            outline: none;
+        }
+
+        /* Asset data table column cells */
+        td[style*="vertical-align: top"] {
+            vertical-align: top !important;
+            padding: 10px 14px;
+        }
+
+        /* Asset data items */
+        .asset-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 0;
+            border-bottom: 1px dashed #d4e8da;
+        }
+        .asset-item:last-child { border-bottom: none; }
+        .asset-item input[type="text"] {
+            flex: 1;
+            background: #f5fbf7;
+            border: 1.5px solid #b5d6bf;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            color: #1a3d22;
+            outline: none;
+            min-width: 160px;
+        }
+
+        /* ── Action buttons in table ── */
+        .btn-delete, .btn-edit {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+        .btn-delete {
+            background: #fdecea;
+            color: #c0392b;
+        }
+        .btn-delete:hover { background: #fad4d0; transform: scale(1.04); }
+        .btn-edit {
+            background: #e6f5ea;
+            color: #1a5c2a;
+        }
+        .btn-edit:hover { background: #c8e8d0; transform: scale(1.04); }
+
+        .action-cell {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        /* ── Dialog / popup ── */
+        .dialog-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 20px;
+        }
+        .dialog-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .dialog-field-full {
+            grid-column: 1 / -1;
+        }
+        .dialog-field label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #3b7a50;
+        }
+        .dialog-field input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid #b5d6bf;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #1a3d22;
+            background: #f5fbf7;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .dialog-field input:focus {
+            border-color: #2e8b4a;
+            background: #fff;
+        }
+        .dialog-field input[disabled],
+        .dialog-field input[readonly] {
+            background: #e8f5ec;
+            color: #5a8a67;
+            cursor: not-allowed;
+        }
+
+        dialog {
+            border: none;
+            border-radius: 14px;
+            padding: 0;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+            width: 95vw;
+        }
+        #mutPopup { max-width: 560px; }
+        #datPopup { max-width: 480px; }
+        dialog::backdrop {
+            background-color: rgba(0,0,0,0.5);
+        }
+        .dialog-header {
+            background: #1a5c2a;
+            color: #fff;
+            padding: 18px 24px;
+            border-radius: 14px 14px 0 0;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dialog-header svg { width: 20px; height: 20px; fill: #fff; }
+        .dialog-body {
+            padding: 24px;
+        }
+        .dialog-body table { font-size: 13px; }
+        .dialog-body thead tr { background: #2e8b4a; }
+        .dialog-body thead th { padding: 9px 12px; color: #fff; font-weight: 600; }
+        .dialog-body tbody td { padding: 8px 12px; border-bottom: 1px solid #d4e8da; }
+        .dialog-body tbody input {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1.5px solid #b5d6bf;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #1a3d22;
+            background: #f5fbf7;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .dialog-body tbody input:focus {
+            border-color: #2e8b4a;
+            background: #fff;
+        }
+        .dialog-body tbody input[disabled],
+        .dialog-body tbody input[readonly] {
+            background: #e8f5ec;
+            color: #5a8a67;
+            cursor: not-allowed;
+        }
+        .dialog-footer {
+            padding: 16px 24px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            border-top: 1px solid #d4e8da;
+        }
+        .btn-submit-dialog {
+            padding: 10px 24px;
+            background: #1a5c2a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit-dialog:hover { background: #145221; }
+        .btn-close-dialog {
+            padding: 10px 24px;
+            background: #f5fbf7;
+            color: #1a5c2a;
+            border: 1.5px solid #b5d6bf;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-close-dialog:hover { background: #e6f5ea; }
+
+        /* ── Row colour coding ── */
+        tbody tr.row-in {
+            background: #d6f0de !important;
+        }
+        tbody tr.row-in:hover {
+            background: #c2e8cc !important;
+        }
+        tbody tr.row-in td input[type="text"] {
+            color: #145221;
+        }
+        tbody tr.row-out {
+            background: #fde8e8 !important;
+        }
+        tbody tr.row-out:hover {
+            background: #fad4d4 !important;
+        }
+        tbody tr.row-out td input[type="text"] {
+            color: #8b1a1a;
+        }
+
+        @media (max-width: 640px) {
+            .header { flex-direction: column; gap: 14px; text-align: center; }
+            .tabcontent { padding: 20px 14px; }
+            .main { padding: 0 10px 40px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3h18v18H3V3zm2 2v4h14V5H5zm0 6v4h14v-4H5zm0 6v2h14v-2H5z"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Asset Table</h1>
+                <p>Warehouse Management System</p>
+            </div>
+        </div>
+        <a href="/home" class="btn-back">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Kembali ke Form
+        </a>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <!-- Tab buttons -->
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="openTab(event, 'data')">DATA</button>
+            <button class="tab-btn" onclick="openTab(event, 'mutasi')">MUTASI</button>
+            <button class="tab-btn" onclick="openTab(event, 'service')">SERVICE</button>
+        </div>
+
+
+        <!-- ── MUTASI TAB ── -->
+        <div id="mutasi" class="tabcontent" style="display: none;">
+            {% if data_mutasi %}
+            <h2>Mutasi Table</h2>
+            <input class="search-bar" type="text" id="filterInputMut" onkeyup="filterTable('filterInputMut','mutasiTable')" placeholder="Cari nama, SN, lokasi...">
+            <table id="mutasiTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>--------Date--------</th>
+                        <th>Name</th>
+                        <th>Toko Tertulis</th>
+                        <th>Jenis Barang</th>
+                        <th>SN</th>
+                        <th>Lokasi Awal</th>
+                        <th>Lokasi Tujuan</th>
+                        <th>Info</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for list in data_mutasi %}
+                        <tr class="{% if list[0]|lower == 'vendor' and list[1]|lower == 'it' %}row-in{% else %}row-out{% endif %}">
+                            <form action="/data/delete_row_mut" method="POST">
+                                <th>{{loop.index0+1}}</th>
+                                <td><input type="text" name="date" value="{{list[6]}}" readonly></td>
+                                <td><input type="text" name="name" value="{{list[3]}}" readonly></td>
+                                <td><input type="text" name="tokotertulis" value="{{list[5]}}" readonly></td>
+                                <td><input type="text" name="jenisbarang" value="{{list[4]}}" readonly></td>
+                                <td><input type="text" name="sn" value="{{list[7]}}" readonly></td>
+                                <td><input type="text" name="lokasiawal" value="{{list[0]}}" readonly></td>
+                                <td><input type="text" name="lokasitujuan" value="{{list[1]}}" readonly></td>
+                                <td><input type="text" name="info" value="{{list[2]}}" readonly></td>
+                                <td>
+                                    <div class="action-cell">
+                                        <button type="submit" class="btn-delete">DELETE</button>
+                                        <button
+                                            type="button"
+                                            class="btn-edit triggermut-btn"
+                                            data-date="{{list[6]}}"
+                                            data-name="{{list[3]}}"
+                                            data-tokotertulis="{{list[5]}}"
+                                            data-jenisbarang="{{list[4]}}"
+                                            data-sn="{{list[7]}}"
+                                            data-lokasiawal="{{list[0]}}"
+                                            data-lokasitujuan="{{list[1]}}"
+                                            data-info="{{list[2]}}">
+                                            EDIT
+                                        </button>
+                                    </div>
+                                </td>
+                            </form>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h3>NO DATA</h3>
+            {% endif %}
+        </div>
+
+        <!-- ── DATA TAB ── -->
+        <div id="data" class="tabcontent" style="display: block;">
+            {% if data_asset %} 
+            <h2>Asset Data</h2>
+            <input class="search-bar" type="text" id="filterInputDat" onkeyup="filterTable('filterInputDat','assetTable')" placeholder="Cari tipe, SN, toko...">
+            <table id="assetTable">
+            <tbody>
+                {% for type in item_types %}
+                    {% for list in data_asset %}
+                        {% if list[0] == type[0] %}
+                            <tr style="vertical-align: top;">
+                                <th style="width: 10%;">
+                                    {{type[0].upper()}}
+                                </th>               
+                                <td >
+                                    <form action="/data/delete_row_data" method="POST" style="display:flex;align-items:center;gap:6px;width:100%;">
+                                        <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly>
+                                        <input type="hidden" name="sn" value="{{list[1]}}">
+                                        <button type="submit" class="btn-delete">DEL</button>
+                                        <button 
+                                            type="button"
+                                            class="btn-edit triggerdat-btn"
+                                            data-type="{{list[0]}}"
+                                            data-sn="{{list[1]}}"
+                                            data-info="{{list[2]}}"
+                                            data-store="{{list[3]}}">
+                                            EDIT
+                                        </button>  
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}                    
+                {% endfor %}
+            </tbody>
+            </table>
+            {% else %}
+                <h3>NO DATA</h3>
+            {% endif %}
+        </div>
+
+
+
+
+        <!-- ── SERVICE TAB ── -->
+        <div id="service" class="tabcontent" style="display: none;">
+            {% if service_history %}
+            <h2>Service History</h2>
+            <input class="search-bar" type="text" id="filterInputServ" onkeyup="filterTable('filterInputServ','serviceTable')" placeholder="Cari tipe, SN, toko...">
+            <table id="serviceTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>item</th>
+                        <th>sn</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for data in service_history %}
+                            <td><input type="text" value="{{data[3]}}">  </td>
+                            <td><input type="text" value="{{data[0]}}">  </td>
+                            <td><input type="text" value="{{data[2]}}">  </td>
+                            <td><input type="text" value="{{data[4]}}">  </td>
+                            <td><input type="text" value="{{data[1]}}">  </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            {% else %}
+            <h3>NO DATA</h3>
+            {% endif %}
+        </div>
+
+    </div><!-- /main -->
+
+
+    <!-- ── EDIT MUTASI DIALOG ── -->
+    <dialog id="mutPopup">
+        <div class="dialog-header">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            Edit Mutasi
+        </div>
+        <div class="dialog-body">
+            <form action="/data/edit_row_mut" method="POST" id="formMut" class="dialog-grid">
+                <div class="dialog-field">
+                    <label>Date</label>
+                    <input name="date" id="triggermut-date" disabled>
+                </div>
+                <div class="dialog-field">
+                    <label>Nomor Serial (SN)</label>
+                    <input name="sn" id="triggermut-sn" readonly>
+                </div>
+                <div class="dialog-field">
+                    <label>Name</label>
+                    <input name="name" id="triggermut-name">
+                </div>
+                <div class="dialog-field">
+                    <label>Toko Tertulis</label>
+                    <input name="tokotertulis" id="triggermut-tokotertulis">
+                </div>
+                <div class="dialog-field">
+                    <label>Jenis Barang</label>
+                    <input name="jenisbarang" id="triggermut-jenisbarang">
+                </div>
+                <div class="dialog-field">
+                    <label>Lokasi Awal</label>
+                    <input name="lokasiawal" id="triggermut-lokasiawal">
+                </div>
+                <div class="dialog-field">
+                    <label>Lokasi Tujuan</label>
+                    <input name="lokasitujuan" id="triggermut-lokasitujuan">
+                </div>
+                <div class="dialog-field dialog-field-full">
+                    <label>Info</label>
+                    <input name="info" id="triggermut-info">
+                </div>
+            </form>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn-close-dialog" id="closeMutPopupBtn">Batal</button>
+            <button type="submit" form="formMut" class="btn-submit-dialog">Simpan Perubahan</button>
+        </div>
+    </dialog>
+
+    <!-- ── EDIT ASSET DIALOG ── -->
+    <dialog id="datPopup">
+        <div class="dialog-header">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            Edit Asset
+        </div>
+        <div class="dialog-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipe Item</th>
+                        <th>Nomor Serial</th>
+                        <th>Store</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <form action="/data/edit_row_data" method="POST" id="formDat">
+                            <td><input name="type" id="triggerdat-type"></td>
+                            <td><input name="sn" id="triggerdat-sn" readonly></td>
+                            <td><input name="store" id="triggerdat-store"></td>
+                            <td><input name="info" id="triggerdat-info"></td>
+                        </form>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn-close-dialog" id="closeDatPopupBtn">Batal</button>
+            <button type="submit" form="formDat" class="btn-submit-dialog">Simpan Perubahan</button>
+        </div>
+    </dialog>
+
+
+    <script>
+
+        /* ── Tab switching ── */
+        function openTab(evt, tabName) {
+            document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).style.display = 'block';
+            evt.currentTarget.classList.add('active');
+        }
+
+        /* ── Search / filter ── */
+        function filterTable(inputId, tableId) {
+            const filter = document.getElementById(inputId).value.toLowerCase();
+            // const rows = document.getElementById(tableId).querySelectorAll('input');
+            const rows = document.getElementById(tableId).querySelectorAll('tbody tr');
+            const buttons = document.getElementById(tableId).querySelectorAll('button');
+            rows.forEach(row => {
+                
+                const show = Array.from(row.querySelectorAll("input"))
+                                .map(input=>input.value)
+                                .join(" ")
+                                .toLowerCase();
+                row.style.display = show.includes(filter.toLowerCase()) ? '' : 'none';
+                
+            });
+        }
+
+        /* ── Mutasi popup ── */
+        const popupmut = document.getElementById('mutPopup');
+        document.querySelectorAll('.triggermut-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('triggermut-date').value        = btn.dataset.date;
+                document.getElementById('triggermut-name').value        = btn.dataset.name;
+                document.getElementById('triggermut-tokotertulis').value = btn.dataset.tokotertulis;
+                document.getElementById('triggermut-jenisbarang').value = btn.dataset.jenisbarang;
+                document.getElementById('triggermut-sn').value          = btn.dataset.sn;
+                document.getElementById('triggermut-lokasiawal').value  = btn.dataset.lokasiawal;
+                document.getElementById('triggermut-lokasitujuan').value = btn.dataset.lokasitujuan;
+                document.getElementById('triggermut-info').value        = btn.dataset.info;
+                popupmut.showModal();
+            });
+        });
+        document.getElementById('closeMutPopupBtn').addEventListener('click', () => popupmut.close());
+
+        /* ── Asset popup ── */
+        const popupdat = document.getElementById('datPopup');
+        document.querySelectorAll('.triggerdat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('triggerdat-type').value  = btn.dataset.type;
+                document.getElementById('triggerdat-sn').value    = btn.dataset.sn;
+                document.getElementById('triggerdat-info').value  = btn.dataset.info;
+                document.getElementById('triggerdat-store').value = btn.dataset.store;
+                popupdat.showModal();
+            });
+        });
+        document.getElementById('closeDatPopupBtn').addEventListener('click', () => popupdat.close());
+    </script>
+
+</body>
+</html>

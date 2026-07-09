@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+
+  web:
+    build: .
+    image: inventory-app
+    ports:
+      - "5000:5000"
+
+    depends_on:
+      - postgres
+
+    environment:
+      DB_HOST: postgres
+      DB_NAME: asset_list
+      DB_USER: postgres
+      DB_PASSWORD: postgreadmin
+
+  postgres:
+    image: postgres:17
+
+    restart: always
+
+    environment:
+      POSTGRES_DB: asset_list
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgreadmin
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<title>MUTASI ASSET</title>
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a5c2a;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* ── Header ── */
+        .header {
+            background-color: #145221;
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #2e8b4a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .header-icon {
+            width: 42px;
+            height: 42px;
+            background: #2e8b4a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-icon svg { width: 24px; height: 24px; fill: #fff; }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .header p {
+            font-size: 12px;
+            color: #a8d5b5;
+            margin-top: 2px;
+        }
+
+        /* ── View Table Button ── */
+        .btn-table {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            color: #1a5c2a;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 13px 28px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
+        .btn-table:hover {
+            background: #e6f5ea;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+        }
+        .btn-table:active { transform: scale(0.97); }
+        .btn-table svg { width: 20px; height: 20px; fill: #1a5c2a; }
+
+        /* ── Main container ── */
+        .main {
+            max-width: 860px;
+            margin: 36px auto;
+            padding: 0 20px 60px;
+        }
+
+        /* ── Tab menu ── */
+        .tab-menu {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 0;
+        }
+        .tab-btn {
+            padding: 11px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            background: #145221;
+            color: #a8d5b5;
+            transition: background 0.2s, color 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .tab-btn:hover { background: #1f7035; color: #fff; }
+        .tab-btn.active {
+            background: #fff;
+            color: #1a5c2a;
+        }
+
+        /* ── Tab content panel ── */
+        .tabcontent {
+            background: #fff;
+            border-radius: 0 12px 12px 12px;
+            padding: 32px 36px;
+            display: grid;
+            color: #1a3d22;
+        }
+        .tabcontent h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a5c2a;
+            margin-bottom: 4px;
+        }
+        .tabcontent > p {
+            font-size: 13px;
+            color: #5a8a67;
+            margin-bottom: 24px;
+        }
+
+        /* ── Add type mini form ── */
+        .add-type-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #d4e8da;
+        }
+        .add-type-form input[type="text"] {
+            flex: 1;
+            padding: 9px 14px;
+            border: 1.5px solid #b5d6bf;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: #1a3d22;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .add-type-form input[type="text"]:focus { border-color: #2e8b4a; }
+        .add-type-form input[value = "+ ADD TYPE"] {
+            padding: 9px 20px;
+            background: #2e8b4a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .add-type-form input[value = "+ ADD TYPE"]:hover { background: #236b39; }
+
+        /* ── Main forms ── */
+        .grid-container form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px 24px;
+        }
+        .grid-container form label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #3b7a50;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 5px;
+        }
+        .grid-container form input[type="text"],
+        .grid-container form select,
+        .grid-container form textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #b5d6bf;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #1a3d22;
+            background: #f5fbf7;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .grid-container form input[type="text"]:focus,
+        .grid-container form select:focus,
+        .grid-container form textarea:focus {
+            border-color: #2e8b4a;
+            box-shadow: 0 0 0 3px rgba(46,139,74,0.12);
+            background: #fff;
+        }
+        .grid-container form textarea { resize: vertical; grid-column: 1 / -1; }
+
+        /* submit button wrapper — spans full width */
+        .submit-wrap { grid-column: 1 / -1; }
+        .grid-container form input[type="submit"] {
+            width: 100%;
+            padding: 13px;
+            background: #1a5c2a;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .grid-container form input[type="submit"]:hover { background: #521414; transform: translateY(-1px); }
+        .grid-container form input[type="submit"]:active { transform: scale(0.98); }
+
+        /* wrap each label+input pair in a div for grid layout */
+        .field { display: flex; flex-direction: column; }
+        .field-full { grid-column: 1 / -1; display: flex; flex-direction: column; }
+        
+        /* button */
+        .rmvbutton{
+            padding: 9px 20px;
+            background: #8b2e2e;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .rmvbutton:hover { background: #6b2323; }
+
+        /* ── Popup ── */
+        .flashes {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 80%;
+            max-width: 600px;
+        }
+        
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; gap: 14px; text-align: center; }
+            .grid-container form { grid-template-columns: 1fr; }
+            .field-full, .submit-wrap { grid-column: 1; }
+            .tabcontent { padding: 20px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 3h22v5H1zM3 10h2v11H3zM19 10h2v11h-2zM10 10h4v7h-4z"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Mutasi Asset</h1>
+                <p>Warehouse Management System</p>
+            </div>
+        </div>
+        <a href="/data/tables" class="btn-table">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 3h18v18H3V3zm2 2v4h14V5H5zm0 6v4h14v-4H5zm0 6v2h14v-2H5z"/>
+            </svg>
+            Lihat Tabel Data
+        </a>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <!-- Tab buttons -->
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="openTab(event, 'IN')">IN</button>
+            <button class="tab-btn" onclick="openTab(event, 'OUT')">OUT</button>
+            <button class="tab-btn" onclick="openTab(event, 'Service')">Service</button>
+        </div>
+
+        <!-- IN -->
+        <div id="IN" class="tabcontent" style="display: block;">
+            <h2>Barang Masuk</h2>
+            <p>Pencatatan Barang Masuk</p>
+
+            <form action="/add_type" method="POST" class="add-type-form">
+                <input type="text" name="add_type" id="add_type" placeholder="Tambah tipe baru...">
+                <input type="submit" value="+ ADD TYPE">
+            </form>
+
+            <div class="grid-container">
+                <form action="/submit" method="POST">
+                    <div class="field">
+                        <label for="usernamein">Nama</label>
+                        <input type="text" id="usernamein" name="usernamein" required>
+                    </div>
+                    <div class="field">
+                        <label for="serialin">Nomor Serial</label>
+                        <input type="text" id="serialin" name="serialin" required>
+                    </div>
+                    <div class="field">
+                        <label for="storein">Nama Toko</label>
+                        <input type="text" id="storein" name="storein" required>
+                    </div>
+                    <div class="field">
+                        <label for="item">Tipe Barang</label>
+
+                        <select name="item" id="item" required>
+                            <option value="">--Pilih tipe--</option>
+                            {% for type in data_asset %}
+                                <option value="{{type[0]}}">{{type[0]}}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
+                    </div>
+                    <div class="field-full">
+                        <label for="commentin">Info</label>
+                        <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan barang..." required></textarea>
+                    </div>
+                    <div class="submit-wrap">
+                        <input type="submit" value="SUBMIT BARANG MASUK">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- OUT -->
+        <div id="OUT" class="tabcontent" style="display: none;">
+            <h2>Barang Keluar</h2>
+            <p>Pencatatan Barang Keluar</p>
+            <div class="grid-container">
+                <form action="/out_item" method="POST">
+                    <div class="field">
+                        <label for="usernameout">Nama</label>
+                        <input type="text" id="usernameout" name="usernameout" required>
+                    </div>
+                    <div class="field">
+                        <label for="serialout">Nomor Serial</label>
+                        <input type="text" id="serialout" name="serialout" required>
+                    </div>
+                    <div class="field-full">
+                        <label for="storeout">Toko Tujuan</label>
+                        <input type="text" id="storeout" name="storeout" required>
+                    </div>
+                    <div class="field-full">
+                        <label for="commentout">Info</label>
+                        <textarea id="commentout" name="commentout" rows="4" placeholder="Keterangan barang..." required></textarea>
+                    </div>
+                    <div class="submit-wrap">
+                        <input type="submit" value="SUBMIT BARANG KELUAR">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Service -->
+        <div id="Service" class="tabcontent" style="display: none;">
+            <h2>Service</h2>
+            <p>Pencatatan Perbaikan Barang</p>
+            <div class="grid-container">
+                <form action="/service" method="POST">
+                    <div class="field">
+                        <label for="usernameservice">Nama</label>
+                        <input type="text" id="usernameservice" name="usernameservice" required>
+                    </div>
+                    <div class="field">
+                        <label for="serialservice">Nomor Serial</label>
+                        <input type="text" id="serialservice" name="serialservice" required>
+                    </div>
+                    <div class="field-full">
+                        <label for="commentservice">Info</label>
+                        <textarea id="commentservice" name="commentservice" rows="4" placeholder="Keterangan perbaikan..." required></textarea>
+                    </div>
+                    <div class="submit-wrap">
+                        <input type="submit" value="SUBMIT SERVICE">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="flashes">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for category, message in messages %}
+                        <!-- Map Flask categories to Bootstrap alert types (e.g., error -> danger) -->
+                        {% set alert_type = 'danger' if category == 'error' else category %}
+                        
+                        <div class="alert alert-{{ alert_type }} alert-dismissible fade show" role="alert">
+                            {{category, message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <script>
+        
+        function removebtn(){
+            const type = document.getElementById("item").value;
+            fetch("/remove_type", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    type: type
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                window.location.reload();
+            });         
+        }
+
+        function openTab(evt, tabName) {
+            var i, tabcontent;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            var tabbtn = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tabbtn.length; i++) {
+                tabbtn[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add("active");
+        }
+
+    </script>
+
+</body>
+</html>
