@@ -295,6 +295,7 @@
             <button class="tab-btn active" onclick="openTab(event, 'IN')">IN</button>
             <button class="tab-btn" onclick="openTab(event, 'OUT')">OUT</button>
             <button class="tab-btn" onclick="openTab(event, 'Service')">Service</button>
+            
         </div>
 
         <!-- IN -->
@@ -307,8 +308,17 @@
                 <input type="submit" value="+ ADD TYPE">
             </form>
 
+
             <div class="grid-container">
                 <form action="/submit" method="POST">
+                    <div>
+                        <input type="radio" id="statusBarang" name="statusBarang" value="Normal" checked >
+                        <label for="Normal">Normal</label>
+                    </div>
+                    <div style="margin-left: -270px;">
+                        <input type="radio" id="statusBarang" name="statusBarang" value="Perlu PR" >
+                        <label for="Perlu PR">Perlu PR</label>
+                    </div>
                     <div class="field">
                         <label for="usernamein">Nama</label>
                         <input type="text" id="usernamein" name="usernamein" required>

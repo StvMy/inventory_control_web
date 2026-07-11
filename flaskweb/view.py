@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template,request,redirect,url_for,flash
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import psycopg2
 import os
 
@@ -23,40 +23,36 @@ def get_db_connection():
         
 @views.route('/home')
 def home():
-    
-    conn = get_db_connection()
-    cur = conn.cursor()
-    
     try: 
         conn = get_db_connection()
+        cur = conn.cursor()
     except psycopg2.Error:
         return render_template("404.html")
     
-    cur = conn.cursor()
     
     cur.execute(
         "SELECT * FROM type_list"
     )
     all_asset = cur.fetchall()
-    cur.execute(
-        "SELECT * FROM asset_data"
-    )
-    table = cur.fetchall()
-    cur.execute(
-        "SELECT * FROM mutasi"
-    )
-    mutasi = cur.fetchall()
-    cur.execute(
-    "SELECT * FROM service_history"
-    )
-    services = cur.fetchall()
+    # cur.execute(
+    #     "SELECT * FROM asset_data"
+    # )
+    # table = cur.fetchall()
+    # cur.execute(
+    #     "SELECT * FROM mutasi"
+    # )
+    # mutasi = cur.fetchall()
+    # cur.execute(
+    # "SELECT * FROM service_history"
+    # )
+    # services = cur.fetchall()
     
     cur.close()
     conn.close()
-    print(f"data tabel: {table}")
-    print(f"type list: {all_asset}")
-    print(f"mutasi list: {mutasi}")
-    print(f"service: {services}")
+    # print(f"data tabel: {table}")
+    # print(f"type list: {all_asset}")
+    # print(f"mutasi list: {mutasi}")
+    # print(f"service: {services}")
     return render_template("page_mutasi.html",data_asset=all_asset) 
 
 
@@ -75,7 +71,9 @@ def submission():
         store = request.form.get("storein")
         info = request.form.get("commentin")
         type_item = request.form.get("item")
-        date = datetime.now()
+        sttsBarang = request.form.get("statusBarang")
+        print(sttsBarang)
+        date = datetime.now(timezone(timedelta(hours=8)))
         try:
             cur.execute(
                 "SELECT * FROM asset_data WHERE Serial_Number = %s",
@@ -85,6 +83,12 @@ def submission():
                 print("FLASSHH-----------------------------///////")
                 flash("Nomor Serial sudah terdaftar","error")
             else:
+                if (sttsBarang == "Perlu PR"):
+                    cur.execute(
+                        "INSERT INTO pr (Type,Serial_Number,store, Information, status, date) Values(%s,%s,%s,%s,%s,%s);",
+                        (type_item.upper(),serial.upper(),store.upper(),info.upper(),"PENDING",date.strftime("%Y-%m-%d %H:%M:%S"),)
+                    )
+                    conn.commit()
                 # 3. Execute SQL
                 cur.execute(
                     "INSERT INTO asset_data (Type,Serial_Number,store, Information) Values(%s,%s,%s,%s);",
@@ -252,14 +256,18 @@ def submission_service():
                     (username.upper(),serial.upper(),info.upper(),data_serial[0],date.strftime("%Y-%m-%d %H:%M:%S"),)
                 )
                 conn.commit()
-                
+                cur.execute( 
+                    "DELETE FROM pr WHERE serial_number = %s ;",
+                    (serial.upper(),)
+                )
+                conn.commit()
                 cur.execute(
-                    "SELECT information FROM asset_data WHERE serial_number = %s ",
+                    "SELECT information FROM asset_data WHERE serial_number = %s ;",
                     (serial.upper(),)
                 )
                 current_info = cur.fetchall()
                 cur.execute(
-                    "UPDATE asset_data set information = %s WHERE serial_number = %s ",
+                    "UPDATE asset_data set information = %s WHERE serial_number = %s ;",
                     (f"{current_info[0]},SUDAH DIPERBAIKI",serial.upper(),)
                 )
                 conn.commit()

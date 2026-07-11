@@ -443,6 +443,7 @@
             <button class="tab-btn active" onclick="openTab(event, 'data')">DATA</button>
             <button class="tab-btn" onclick="openTab(event, 'mutasi')">MUTASI</button>
             <button class="tab-btn" onclick="openTab(event, 'service')">SERVICE</button>
+            <button class="tab-btn" onclick="openTab(event, 'pr')">PR</button>
         </div>
 
 
@@ -580,6 +581,41 @@
             </table>
             {% else %}
             <h3>NO DATA</h3>
+            {% endif %}
+        </div>
+        
+
+
+        <!-- ── PR TAB ── -->
+        <div id="pr" class="tabcontent" style="display: none;">
+            {% if pr %} 
+            <h2>List Barang Pending Belum PR</h2>
+            <input class="search-bar" type="text" id="filterInputPR" onkeyup="filterTable('filterInputPR','prTable')" placeholder="Cari tipe, SN, toko...">
+            <table id="assetTable">
+            <tbody>
+                {% for type in item_types %}
+                    {% for list in pr %}
+                        {% if list[0] == type[0] %}
+                            <tr style="vertical-align: top;" class="{% if list[4] == 'DONE'%}row-in{% else %}row-out{% endif %}">
+                                <th style="width: 10%;">
+                                    {{type[0].upper()}}
+                                </th>               
+                                <td >
+                                    <form action="/data/complete_pr" method="POST" style="display:flex;align-items:center;gap:6px;width:100%;">
+                                        <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly>
+                                        <input type="text" name="status" value="{{list[4]}}">
+                                        <input type="hidden" name="sn" value="{{list[1]}}">
+                                        <button type="submit" class="btn-delete">SUDAH PR</button>  
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}                    
+                {% endfor %}
+            </tbody>
+            </table>
+            {% else %}
+                <h3>NO DATA</h3>
             {% endif %}
         </div>
 

@@ -27,19 +27,22 @@ def table_data():
     cur.execute("SELECT * FROM type_list")
     types = cur.fetchall()
     
-    cur.execute("SELECT * FROM mutasi ORDER BY date ASC")
+    cur.execute("SELECT * FROM mutasi ORDER BY date DESC")
     mutasi = cur.fetchall()
     
     cur.execute("SELECT * FROM asset_data ORDER BY store")
     all_asset = cur.fetchall()
     
-    cur.execute("SELECT * FROM service_history ORDER BY date ASC")
+    cur.execute("SELECT * FROM pr ORDER BY status ASC")
+    pr_list = cur.fetchall()
+    
+    cur.execute("SELECT * FROM service_history ORDER BY date DESC")
     services = cur.fetchall()
     
     cur.close()
     conn.close()
 
-    return render_template("table.html",item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services)
+    return render_template("table.html",item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list)
 
 
 
@@ -156,4 +159,25 @@ def ed_row_data():
         conn.close()
         
         return redirect(url_for("tables.table_data", tab="data"))
+    
+    
+
+@tables.route("/complete_pr",methods=["POST"])
+def pr_done():
+    if request.method == "POST":
+        sn = request.form.get("sn")
+        
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            
+            cur.execute(
+                "UPDATE pr SET status = %s WHERE serial_number =%s;",
+                ("DONE",sn.upper())
+            )  
+            conn.commit()
+            return redirect(url_for("tables.table_data", tab="pr"))
+        except psycopg2.Error as e:
+            print(e)
+                      
 
