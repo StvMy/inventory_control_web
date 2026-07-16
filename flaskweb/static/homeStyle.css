@@ -1,0 +1,254 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #1a5c2a;
+    min-height: 100vh;
+    color: #fff;
+}
+
+/* ── Header ── */
+.header {
+    background-color: #145221;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid #2e8b4a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.header-icon {
+    width: 42px;
+    height: 42px;
+    background: #2e8b4a;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header-icon svg { width: 24px; height: 24px; fill: #fff; }
+.header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.header p {
+    font-size: 12px;
+    color: #a8d5b5;
+    margin-top: 2px;
+}
+
+/* ── View Table Button ── */
+.btn-table {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    color: #1a5c2a;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 13px 28px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+.btn-table:hover {
+    background: #e6f5ea;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+.btn-table:active { transform: scale(0.97); }
+.btn-table svg { width: 20px; height: 20px; fill: #1a5c2a; }
+
+/* ── Main container ── */
+.main {
+    max-width: 860px;
+    margin: 36px auto;
+    padding: 0 20px 60px;
+}
+
+/* ── Tab menu ── */
+.tab-menu {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 0;
+}
+.tab-btn {
+    padding: 11px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    background: #145221;
+    color: #a8d5b5;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.5px;
+}
+.tab-btn:hover { background: #1f7035; color: #fff; }
+.tab-btn.active {
+    background: #fff;
+    color: #1a5c2a;
+}
+
+/* ── Tab content panel ── */
+.tabcontent {
+    background: #fff;
+    border-radius: 0 12px 12px 12px;
+    padding: 32px 36px;
+    display: grid;
+    color: #1a3d22;
+}
+.tabcontent h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a5c2a;
+    margin-bottom: 4px;
+}
+.tabcontent > p {
+    font-size: 13px;
+    color: #5a8a67;
+    margin-bottom: 24px;
+}
+
+/* ── Add type mini form ── */
+.add-type-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #d4e8da;
+}
+.add-type-form input[type="text"] {
+    flex: 1;
+    padding: 9px 14px;
+    border: 1.5px solid #b5d6bf;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    color: #1a3d22;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.add-type-form input[type="text"]:focus { border-color: #2e8b4a; }
+.add-type-form input[value = "+ ADD TYPE"] {
+    padding: 9px 20px;
+    background: #2e8b4a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-type-form input[value = "+ ADD TYPE"]:hover { background: #236b39; }
+
+/* ── Main forms ── */
+.grid-container form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+}
+.grid-container form label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #3b7a50;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 5px;
+}
+.grid-container form input[type="text"],
+.grid-container form select,
+.grid-container form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #b5d6bf;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: #1a3d22;
+    background: #f5fbf7;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.grid-container form input[type="text"]:focus,
+.grid-container form select:focus,
+.grid-container form textarea:focus {
+    border-color: #2e8b4a;
+    box-shadow: 0 0 0 3px rgba(46,139,74,0.12);
+    background: #fff;
+}
+.grid-container form textarea { resize: vertical; grid-column: 1 / -1; }
+
+/* submit button wrapper — spans full width */
+.submit-wrap { grid-column: 1 / -1; }
+.grid-container form input[type="submit"] {
+    width: 100%;
+    padding: 13px;
+    background: #1a5c2a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.15s;
+}
+.grid-container form input[type="submit"]:hover { background: #521414; transform: translateY(-1px); }
+.grid-container form input[type="submit"]:active { transform: scale(0.98); }
+
+/* wrap each label+input pair in a div for grid layout */
+.field { display: flex; flex-direction: column; }
+.field-full { grid-column: 1 / -1; display: flex; flex-direction: column; }
+
+/* button */
+.rmvbutton{
+    padding: 9px 20px;
+    background: #8b2e2e;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.rmvbutton:hover { background: #6b2323; }
+
+/* ── Popup ── */
+.flashes {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 80%;
+    max-width: 600px;
+}
+
+
+@media (max-width: 600px) {
+    .header { flex-direction: column; gap: 14px; text-align: center; }
+    .grid-container form { grid-template-columns: 1fr; }
+    .field-full, .submit-wrap { grid-column: 1; }
+    .tabcontent { padding: 20px 20px; }
+}

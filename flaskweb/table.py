@@ -30,7 +30,7 @@ def table_data():
     cur.execute("SELECT * FROM mutasi ORDER BY date DESC")
     mutasi = cur.fetchall()
     
-    cur.execute("SELECT * FROM asset_data ORDER BY store")
+    cur.execute("SELECT * FROM asset_data")
     all_asset = cur.fetchall()
     
     cur.execute("SELECT * FROM pr ORDER BY status ASC")
@@ -53,11 +53,12 @@ def del_row_mut():
         cur = conn.cursor()
         try:   
             sn = request.form.get("sn")
+            idunique = request.form.get("id")
             
             #  1.Fetch data to display on the page
             cur.execute(
-                "DELETE FROM mutasi WHERE serial = %s;",
-                (sn.upper(),)
+                "DELETE FROM mutasi WHERE serial = %s AND ID=%s ;",
+                (sn, idunique,)
             )
             conn.commit()
         except psycopg2.Error as e:
@@ -79,9 +80,7 @@ def ed_row_mut():
         lokasiawal = request.form.get("lokasiawal")
         lokasitujuan = request.form.get("lokasitujuan")
         info = request.form.get("info")
-        
-        
-        print(f"{name}-------------------------------/////////////")
+        idunique = request.form.get("id")
 
         try:   
             conn = get_db_connection()
@@ -90,11 +89,11 @@ def ed_row_mut():
             print(f"{sn}----//----")
                 
             cur.execute(  
-                "UPDATE mutasi SET name=%s, item_store_name=%s, item=%s, initial=%s, destination=%s, info=%s WHERE serial=%s;",
-                (name, tokotertulis, jenisbarang, lokasiawal, lokasitujuan, info, sn,)
+                "UPDATE mutasi SET name=%s, item_store_name=%s, item=%s, initial=%s, destination=%s, info=%s WHERE serial=%s AND id=%s ;",
+                (name, tokotertulis, jenisbarang, lokasiawal, lokasitujuan, info, sn, idunique, )
             )
             conn.commit()
-            
+            print(name, tokotertulis, jenisbarang, lokasiawal, lokasitujuan, info, sn, idunique)
             print("UPDATED")
 
         except psycopg2.Error as e:

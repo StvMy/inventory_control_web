@@ -19,8 +19,12 @@ services:
 
   postgres:
     image: postgres:17
-
+    shm_size: '3gb'
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 3g 
 
     environment:
       POSTGRES_DB: asset_list
