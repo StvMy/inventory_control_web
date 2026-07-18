@@ -1,9 +1,12 @@
 from flask import Blueprint, render_template,request,redirect,url_for,flash
 from datetime import datetime, timezone, timedelta
 import psycopg2
+from psycopg2 import pool
 import os
 
 DB_PARAMS = {
+    "minconn":1,
+    "maxconn":10,
     "database":"asset_list",
     "user" : "postgres",
     "password" : "postgreadmin",
@@ -18,13 +21,13 @@ print(DB_PARAMS)
 
 def get_db_connection():
     """ Establish connection and return database connection"""
-    return psycopg2.connect(**DB_PARAMS) # ** -> unpack dictionary
+    return pool.ThreadedConnectionPool(**DB_PARAMS) # ** -> unpack dictionary
 
         
 @views.route('/home')
 def home():
     try: 
-        conn = get_db_connection()
+        conn = get_db_connection().getconn()
         cur = conn.cursor()
     except psycopg2.Error:
         return render_template("404.html")
@@ -59,7 +62,7 @@ def home():
 @views.route('/submit', methods=["POST"])
 def submission():
     """ CONNECT TO DATABASE """
-    conn = get_db_connection()
+    conn = get_db_connection().getconn()
     cur = conn.cursor()
     
     # 1. Submission
@@ -115,7 +118,7 @@ def submission():
 @views.route('/add_type', methods=["POST"])
 def submission_type():
     """ CONNECT TO DATABASE """
-    conn = get_db_connection()
+    conn = get_db_connection().getconn()
     cur = conn.cursor()
     
     # 1. Submission
@@ -149,7 +152,7 @@ def submission_type():
 @views.route('/remove_type', methods=["POST"])
 def submission_remove_type():
     """ CONNECT TO DATABASE """
-    conn = get_db_connection()
+    conn = get_db_connection().getconn()
     cur = conn.cursor()
     
     # 1. Submission
@@ -187,7 +190,7 @@ def submission_remove_type():
 @views.route('/out_item', methods=["POST"])
 def submission_out():
     """ CONNECT TO DATABASE """
-    conn = get_db_connection()
+    conn = get_db_connection().getconn()
     cur = conn.cursor()
 
     # 1. Submission
@@ -236,7 +239,7 @@ def submission_out():
 @views.route('/service', methods=["POST"])
 def submission_service():    
     """ CONNECT TO DATABASE """
-    conn = get_db_connection()
+    conn = get_db_connection().getconn()
     cur = conn.cursor()
     if request.method == "POST":
         username = request.form.get("usernameservice")
@@ -290,7 +293,7 @@ def submission_service():
 # @views.route('/mutasi', methods=["POST"])
 # def submission_mutasi():    
 #     """ CONNECT TO DATABASE """
-#     conn = get_db_connection()
+#     conn = get_db_connection().getconn()
 #     cur = conn.cursor()
 #     if request.method == "POST":
 #         username = request.form.get("usernamemutasi")

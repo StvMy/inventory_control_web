@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 import psycopg2
+from psycopg2 import pool
 import os
 
 DB_PARAMS = {
+    "minconn":1,
+    "maxconn":10,
     "database":"asset_list",
     "user" : "postgres",
     "password" : "postgreadmin",
@@ -15,13 +18,14 @@ tables = Blueprint("tables",__name__)
 
 def get_db_connection():
     """ Establish connection and return database connection"""
-    return psycopg2.connect(**DB_PARAMS) # ** -> unpack dictionary
+    
+    return pool.ThreadedConnectionPool(**DB_PARAMS) # ** -> unpack dictionary
 
         
 @tables.route("/tables")
 def table_data():
 
-    conn = get_db_connection()
+    conn = get_db_connection().getconn()
     cur = conn.cursor()
     
     cur.execute("SELECT * FROM type_list")
@@ -49,7 +53,7 @@ def table_data():
 @tables.route("/delete_row_mut",methods=["POST"])
 def del_row_mut():
     if request.method == "POST":    
-        conn = get_db_connection()
+        conn = get_db_connection().getconn()
         cur = conn.cursor()
         try:   
             sn = request.form.get("sn")
@@ -83,7 +87,7 @@ def ed_row_mut():
         idunique = request.form.get("id")
 
         try:   
-            conn = get_db_connection()
+            conn = get_db_connection().getconn()
             cur = conn.cursor()
             
             print(f"{sn}----//----")
@@ -109,7 +113,7 @@ def ed_row_mut():
 @tables.route("/delete_row_data",methods=["POST"])
 def del_row_data():
     if request.method == "POST":    
-        conn = get_db_connection()
+        conn = get_db_connection().getconn()
         cur = conn.cursor()
         try:   
             sn = request.form.get("sn")
@@ -138,7 +142,7 @@ def ed_row_data():
         
         
         try:   
-            conn = get_db_connection()
+            conn = get_db_connection().getconn()
             cur = conn.cursor()
             
             print(f"{sn}----//----")
@@ -167,7 +171,7 @@ def pr_done():
         sn = request.form.get("sn")
         
         try:
-            conn = get_db_connection()
+            conn = get_db_connection().getconn()
             cur = conn.cursor()
             
             cur.execute(
