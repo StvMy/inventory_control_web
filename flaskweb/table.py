@@ -183,4 +183,3 @@ def pr_done():
         except psycopg2.Error as e:
             print(e)
                       
-

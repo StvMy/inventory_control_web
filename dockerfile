@@ -11,7 +11,7 @@ EXPOSE 5000
 
 COPY . .
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "main:app"] 
+CMD ["gunicorn", "-w", "4","--threads","10", "-b", "0.0.0.0:5000", "main:app"] 
 
 #python_file_name:flask_name (__name__)
 #the CMD file looks like this due to use of gunicorn
