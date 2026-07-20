@@ -199,7 +199,7 @@ def submission_out():
         serial = request.form.get("serialout")
         store = request.form.get("storeout")
         info = request.form.get("commentout")
-        date = datetime.now()
+        date = datetime.now(timezone(timedelta(hours=8)))
         try:
 
             cur.execute(
@@ -245,7 +245,7 @@ def submission_service():
         username = request.form.get("usernameservice")
         serial = request.form.get("serialservice")
         info = request.form.get("commentservice")
-        date = datetime.now()
+        date = datetime.now(timezone(timedelta(hours=8)))
         try:
             cur.execute(
                 "SELECT type FROM asset_data WHERE serial_number = %s",
