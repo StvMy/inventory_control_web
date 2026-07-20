@@ -5,7 +5,7 @@ import os
 
 DB_PARAMS = {
     "minconn":1,
-    "maxconn":10,
+    "maxconn":5,
     "database":"asset_list",
     "user" : "postgres",
     "password" : "postgreadmin",
@@ -27,25 +27,31 @@ def table_data():
 
     conn = get_db_connection().getconn()
     cur = conn.cursor()
-    
+
     cur.execute("SELECT * FROM type_list")
     types = cur.fetchall()
+    print("fetch")
     
     cur.execute("SELECT * FROM mutasi ORDER BY date DESC")
     mutasi = cur.fetchall()
+    print("fetch")
     
     cur.execute("SELECT * FROM asset_data")
     all_asset = cur.fetchall()
+    print("fetch")
     
     cur.execute("SELECT * FROM pr ORDER BY status ASC")
     pr_list = cur.fetchall()
+    print("fetch")
     
     cur.execute("SELECT * FROM service_history ORDER BY date DESC")
     services = cur.fetchall()
+    print("fetch")
     
     cur.close()
     conn.close()
-
+    print("close connection")
+    
     return render_template("table.html",item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list)
 
 

@@ -56,13 +56,15 @@
 
             <div class="grid-container">
                 <form action="/submit" method="POST">
-                    <div>
-                        <input type="radio" id="statusBarang" name="statusBarang" value="Normal" checked >
-                        <label for="Normal">Normal</label>
-                    </div>
-                    <div style="margin-left: -270px;">
-                        <input type="radio" id="statusBarang" name="statusBarang" value="Perlu PR" >
-                        <label for="Perlu PR">Perlu PR</label>
+                    <div class="radio-group field-full">
+                        <label class="radio-option">
+                            <input type="radio" id="statusNormal" name="statusBarang" value="Normal" checked>
+                            <span>Normal</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" id="statusPR" name="statusBarang" value="Perlu PR">
+                            <span>Perlu PR</span>
+                        </label>
                     </div>
                     <div class="field">
                         <label for="usernamein">Nama</label>

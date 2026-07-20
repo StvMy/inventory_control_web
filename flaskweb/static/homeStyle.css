@@ -73,6 +73,7 @@ body {
 
 /* ── Main container ── */
 .main {
+    width: 100%;
     max-width: 860px;
     margin: 36px auto;
     padding: 0 20px 60px;
@@ -126,13 +127,15 @@ body {
 /* ── Add type mini form ── */
 .add-type-form {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 28px;
     padding-bottom: 24px;
     border-bottom: 1px solid #d4e8da;
 }
 .add-type-form input[type="text"] {
-    flex: 1;
+    flex: 1 1 200px;
+    min-width: 0;
     padding: 9px 14px;
     border: 1.5px solid #b5d6bf;
     border-radius: 8px;
@@ -144,6 +147,7 @@ body {
 }
 .add-type-form input[type="text"]:focus { border-color: #2e8b4a; }
 .add-type-form input[value = "+ ADD TYPE"] {
+    flex: 0 0 auto;
     padding: 9px 20px;
     background: #2e8b4a;
     color: #fff;
@@ -153,15 +157,49 @@ body {
     font-weight: 600;
     font-family: 'Inter', sans-serif;
     cursor: pointer;
+    white-space: nowrap;
     transition: background 0.2s;
 }
 
 .add-type-form input[value = "+ ADD TYPE"]:hover { background: #236b39; }
 
+/* ── Radio group (status barang) ── */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-bottom: 4px;
+}
+.radio-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border: 1.5px solid #b5d6bf;
+    border-radius: 8px;
+    background: #f5fbf7;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a3d22;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+.radio-option:has(input:checked) {
+    border-color: #2e8b4a;
+    background: #e6f5ea;
+}
+.radio-option input[type="radio"] {
+    accent-color: #1a5c2a;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
 /* ── Main forms ── */
 .grid-container form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 16px 24px;
 }
 .grid-container form label {
@@ -212,7 +250,7 @@ body {
     letter-spacing: 0.5px;
     transition: background 0.2s, transform 0.15s;
 }
-.grid-container form input[type="submit"]:hover { background: #521414; transform: translateY(-1px); }
+.grid-container form input[type="submit"]:hover { background: #145221; transform: translateY(-1px); }
 .grid-container form input[type="submit"]:active { transform: scale(0.98); }
 
 /* wrap each label+input pair in a div for grid layout */
@@ -221,6 +259,7 @@ body {
 
 /* button */
 .rmvbutton{
+    margin-top: 8px;
     padding: 9px 20px;
     background: #8b2e2e;
     color: #fff;
@@ -246,9 +285,32 @@ body {
 }
 
 
+/* ── Tablet ── */
+@media (max-width: 768px) {
+    .main { max-width: 100%; margin: 24px auto; padding: 0 16px 48px; }
+    .tabcontent { padding: 24px 24px; }
+}
+
+/* ── Phone ── */
 @media (max-width: 600px) {
-    .header { flex-direction: column; gap: 14px; text-align: center; }
+    .header { flex-direction: column; gap: 14px; text-align: center; padding: 16px 20px; }
+    .btn-table { width: 100%; justify-content: center; }
+    .tab-menu { flex-wrap: wrap; }
+    .tab-btn { flex: 1 1 auto; padding: 11px 14px; text-align: center; }
     .grid-container form { grid-template-columns: 1fr; }
     .field-full, .submit-wrap { grid-column: 1; }
-    .tabcontent { padding: 20px 20px; }
+    .tabcontent { padding: 20px 16px; border-radius: 0 0 12px 12px; }
+    .add-type-form { flex-direction: column; }
+    .add-type-form input[value = "+ ADD TYPE"] { width: 100%; }
+    .radio-group { gap: 8px 12px; }
+    .radio-option { flex: 1 1 auto; justify-content: center; }
+    .rmvbutton { width: 100%; }
+}
+
+/* ── Small phone ── */
+@media (max-width: 380px) {
+    .header h1 { font-size: 17px; }
+    .header p { font-size: 11px; }
+    .tab-btn { font-size: 12px; padding: 10px 8px; }
+    .tabcontent h2 { font-size: 18px; }
 }
