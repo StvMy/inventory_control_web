@@ -26,17 +26,26 @@ def get_db_connection():
         
 @views.route('/home')
 def home():
+    
     try: 
+        tab = request.args.get('tab')
+        if tab is None:
+            tab = "IN"
+            
         conn = get_db_connection().getconn()
         cur = conn.cursor()
+        
+        cur.execute(
+            "SELECT * FROM type_list"
+        )
+        all_asset = cur.fetchall()
+        cur.close()
+        conn.close()
+        
     except psycopg2.Error:
         return render_template("404.html")
-    
-    
-    cur.execute(
-        "SELECT * FROM type_list"
-    )
-    all_asset = cur.fetchall()
+    return render_template("page_mutasi.html",data_asset=all_asset, tab=tab) 
+  
     # cur.execute(
     #     "SELECT * FROM asset_data"
     # )
@@ -50,13 +59,12 @@ def home():
     # )
     # services = cur.fetchall()
     
-    cur.close()
-    conn.close()
+
     # print(f"data tabel: {table}")
     # print(f"type list: {all_asset}")
     # print(f"mutasi list: {mutasi}")
     # print(f"service: {services}")
-    return render_template("page_mutasi.html",data_asset=all_asset) 
+
 
 
 @views.route('/submit', methods=["POST"])
@@ -67,6 +75,7 @@ def submission():
     
     # 1. Submission
     if request.method == "POST":
+
         
         # 2. Declare Variable
         username = request.form.get("usernamein")
@@ -226,13 +235,13 @@ def submission_out():
                 return redirect(request.referrer)
             else:
                 flash("Nomor Serial tidak terdaftar","error")
-                return(redirect(url_for("views.home")))
+                return(redirect(url_for("views.home",tab="OUT")))
         except psycopg2.Error as e:
             print(e)
             conn.rollback()  # important: clear failed transaction
             cur.close()
             conn.close()
-            return redirect(request.referrer)
+            return redirect(url_for("views.home"))
 
   
     
@@ -279,7 +288,7 @@ def submission_service():
                 return redirect(request.referrer)
             else:
                 flash("Nomor Serial tidak terdaftar","error")
-                return redirect(url_for("views.home"))
+                return redirect(url_for("views.home",tab="Service"))
         except psycopg2.Error as e:
             print(e)
             conn.rollback()  # important: clear failed transaction

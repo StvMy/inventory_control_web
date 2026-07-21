@@ -28,6 +28,11 @@ def table_data():
     conn = get_db_connection().getconn()
     cur = conn.cursor()
 
+
+    tab = request.args.get('tab')
+    if tab is None:
+        tab = "data"
+    
     cur.execute("SELECT * FROM type_list")
     types = cur.fetchall()
     print("fetch")
@@ -52,7 +57,8 @@ def table_data():
     conn.close()
     print("close connection")
     
-    return render_template("table.html",item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list)
+    print(tab)
+    return render_template("table.html",item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list, tab=tab)
 
 
 

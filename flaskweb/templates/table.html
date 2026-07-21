@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../static/tableStyle.css">
 
 
+
     <!-- <script src="https://jsdelivr.net"></script> -->
 
 </head>
@@ -38,15 +39,13 @@
 
     <!-- Main -->
     <div class="main">
-
         <!-- Tab buttons -->
         <div class="tab-menu">
-            <button class="tab-btn active" onclick="openTab(event, 'data')">DATA</button>
+            <button class="tab-btn" onclick="openTab(event, 'data')">DATA</button>
             <button class="tab-btn" onclick="openTab(event, 'mutasi')">MUTASI</button>
             <button class="tab-btn" onclick="openTab(event, 'service')">SERVICE</button>
             <button class="tab-btn" onclick="openTab(event, 'pr')">PR</button>
         </div>
-
 
         <!-- ── MUTASI TAB ── -->
         <div id="mutasi" class="tabcontent" style="display: none;">
@@ -112,7 +111,7 @@
         </div>
 
         <!-- ── DATA TAB ── -->
-        <div id="data" class="tabcontent" style="display: block;">
+        <div id="data" class="tabcontent" style="display: none;">
             {% if data_asset %} 
             <h2>Asset Data</h2>
             <input class="search-bar" type="text" id="filterInputDat" onkeyup="filterTable('filterInputDat','assetTable')" placeholder="Cari tipe, SN, toko...">
@@ -204,7 +203,7 @@
                                     {{type[0].upper()}}
                                 </th>               
                                 <td >
-                                    {% if list[4] == "Perlu PR" %}
+                                    {% if list[4] == "PENDING" %}
                                     <form action="/data/complete_pr" method="POST" style="display:flex;align-items:center;gap:6px;width:100%;">
                                         <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly>
                                         <input type="text" name="status" value="{{list[4]}}">
@@ -304,7 +303,7 @@
                 <tbody>
                     <tr>
                         <form action="/data/edit_row_data" method="POST" id="formDat">
-                            <td><input name="type" id="triggerdat-type"></td>
+                            <td><input name="type" id="triggerdat-type" readonly></td>
                             <td><input name="sn" id="triggerdat-sn" readonly></td>
                             <td><input name="store" id="triggerdat-store"></td>
                             <td><input name="info" id="triggerdat-info"></td>
@@ -321,6 +320,10 @@
 
 
     <script>
+        // switch tab to latest open
+        document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('{{tab}}').style.display = 'block';
 
         /* ── Tab switching ── */
         function openTab(evt, tabName) {

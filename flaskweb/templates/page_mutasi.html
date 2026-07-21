@@ -174,6 +174,11 @@
     </div>
 
     <script>
+
+        document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('{{tab}}').style.display = 'block';
+
         
         function removebtn(){
             const type = document.getElementById("item").value;
