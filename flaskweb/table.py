@@ -54,12 +54,18 @@ def table_data():
     services = cur.fetchall()
     print("fetch")
     
+    pr_sn = []
+    for sn in pr_list:
+        pr_sn.append(sn[1])
+    print(pr_sn)
+    
+    
     cur.close()
     conn.close()
     print("close connection")
     
     print(tab)
-    return render_template("table.html",item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list, tab=tab)
+    return render_template("table.html",pr_sn_list=pr_sn, item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list, tab=tab)
 
 
 
@@ -192,6 +198,26 @@ def pr_done():
                 ("DONE",sn.upper())
             )  
             conn.commit()    
+        except psycopg2.Error as e:
+            print(e)
+        
+        return redirect(url_for("tables.table_data", tab="pr"))
+
+@tables.route("/delete_PR",methods=["POST"])
+def pr_delete():
+    if request.method == "POST":
+        sn = request.form.get("sn")
+        
+        try:
+            conn = get_db_connection().getconn()
+            cur = conn.cursor()
+            
+            cur.execute(
+                "DELETE FROM pr WHERE serial_number =%s;",
+                (sn.upper(),)
+            )  
+            conn.commit()    
+            print(f"delete PR: {sn}")
         except psycopg2.Error as e:
             print(e)
         

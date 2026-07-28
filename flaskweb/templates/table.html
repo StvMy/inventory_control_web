@@ -120,15 +120,17 @@
                 {% for type in item_types %}
                     {% for list in data_asset %}
                         {% if list[0] == type[0] %}
-                            <tr style="vertical-align: top;">
-                                <th style="width: 10%;">
-                                    {{type[0].upper()}}
+                            <tr style="vertical-align: top; ">
+                                <th>
+                                    <input type="text" value="{{type[0].upper()}}">
                                 </th>               
                                 <td >
                                     <form action="/data/delete_row_data" method="POST" style="display:flex;align-items:center;gap:6px;width:100%;">
                                         <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly>
                                         <input type="hidden" name="sn" value="{{list[1]}}">
-                                        <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>
+                                        {% if list[1] not in pr_sn_list %}
+                                            <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>      
+                                        {% endif %}
                                         <button type="submit" class="btn-delete">DEL</button>
                                         <button 
                                             type="button"
@@ -209,14 +211,16 @@
                                         <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly>
                                         <input type="text" name="status" value="{{list[4]}}">
                                         <input type="hidden" name="sn" value="{{list[1]}}">
-                                        <button type="submit" class="btn-delete">SUDAH PR</button>  
+                                        <button type="submit" class="btn-edit">SUDAH PR</button>
+                                        <button type="submit" class="btn-delete" formaction="/data/delete_PR" formmethod="POST" >DELETE</button>  
                                     </form>
                                     {% else %}
-                                    <div style="display:flex;align-items:center;gap:6px;width:100%;">
+                                    <form action="/data/delete_PR" method="POST" style="display:flex;align-items:center;gap:6px;width:100%;">
                                         <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly>
                                         <input type="text" name="status" value="{{list[4]}}">
                                         <input type="hidden" name="sn" value="{{list[1]}}">
-                                    </div>
+                                        <button type="submit" class="btn-delete">DELETE</button>  
+                                    </form>
                                     {% endif %}
                                 </td>
                             </tr>

@@ -80,10 +80,12 @@ def submission():
         # 2. Declare Variable
         username = request.form.get("usernamein")
         serial = request.form.get("serialin")
+        serial = "".join(serial.split())
         store = request.form.get("storein")
         info = request.form.get("commentin")
         type_item = request.form.get("item")
         sttsBarang = request.form.get("statusBarang")
+        lokasi_awal = request.form.get("where_from")
         print(sttsBarang)
         date = datetime.now(timezone(timedelta(hours=8)))
         try:
@@ -109,7 +111,7 @@ def submission():
                 conn.commit()
                 cur.execute(
                     "INSERT INTO mutasi (date, serial, initial, destination, info, name, item, item_store_name) Values(%s,%s,%s,%s,%s,%s,%s,%s);",
-                    (date.strftime("%Y-%m-%d %H:%M:%S"),serial.upper(),"VENDOR","IT",info.upper(),username.upper(),type_item.upper(), store.upper())
+                    (date.strftime("%Y-%m-%d %H:%M:%S"),serial.upper(),lokasi_awal.upper(),"IT",info.upper(),username.upper(),type_item.upper(), store.upper())
                 )
                 # 3. Commit changes and close connections
                 conn.commit()
@@ -206,6 +208,7 @@ def submission_out():
     if request.method == "POST":
         username = request.form.get("usernameout")
         serial = request.form.get("serialout")
+        serial = "".join(serial.split())
         store = request.form.get("storeout")
         info = request.form.get("commentout")
         date = datetime.now(timezone(timedelta(hours=8)))
@@ -253,6 +256,7 @@ def submission_service():
     if request.method == "POST":
         username = request.form.get("usernameservice")
         serial = request.form.get("serialservice")
+        serial = "".join(serial.split())
         info = request.form.get("commentservice")
         date = datetime.now(timezone(timedelta(hours=8)))
         try:
