@@ -217,7 +217,7 @@ td[style*="vertical-align: top"] {
 }
 
 /* ── Action buttons in table ── */
-.btn-delete, .btn-edit {
+.btn-delete, .btn-edit, .btn-pr {
     padding: 5px 12px;
     border: none;
     border-radius: 6px;
@@ -238,6 +238,11 @@ td[style*="vertical-align: top"] {
     color: #1a5c2a;
 }
 .btn-edit:hover { background: #c8e8d0; transform: scale(1.04); }
+.btn-pr {
+    background: #f3f3bf;
+    color: #45490b;
+}
+.btn-pr:hover { background: #ffff57; transform: scale(1.04); }
 
 .action-cell {
     display: flex;

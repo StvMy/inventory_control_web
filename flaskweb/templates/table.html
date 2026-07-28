@@ -128,6 +128,7 @@
                                     <form action="/data/delete_row_data" method="POST" style="display:flex;align-items:center;gap:6px;width:100%;">
                                         <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly>
                                         <input type="hidden" name="sn" value="{{list[1]}}">
+                                        <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>
                                         <button type="submit" class="btn-delete">DEL</button>
                                         <button 
                                             type="button"
