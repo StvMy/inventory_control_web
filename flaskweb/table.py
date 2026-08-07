@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 import psycopg2
 from psycopg2 import pool
 import os
+from datetime import datetime, timezone, timedelta
 
 DB_PARAMS = {
     "minconn":1,
@@ -53,12 +54,18 @@ def table_data():
     services = cur.fetchall()
     print("fetch")
     
+    pr_sn = []
+    for sn in pr_list:
+        pr_sn.append(sn[1])
+    print(pr_sn)
+    
+    
     cur.close()
     conn.close()
     print("close connection")
     
     print(tab)
-    return render_template("table.html",item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list, tab=tab)
+    return render_template("table.html",pr_sn_list=pr_sn, item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list, tab=tab)
 
 
 
@@ -190,8 +197,54 @@ def pr_done():
                 "UPDATE pr SET status = %s WHERE serial_number =%s;",
                 ("DONE",sn.upper())
             )  
-            conn.commit()
-            return redirect(url_for("tables.table_data", tab="pr"))
+            conn.commit()    
         except psycopg2.Error as e:
             print(e)
-                      
+        
+        return redirect(url_for("tables.table_data", tab="pr"))
+
+@tables.route("/delete_PR",methods=["POST"])
+def pr_delete():
+    if request.method == "POST":
+        sn = request.form.get("sn")
+        
+        try:
+            conn = get_db_connection().getconn()
+            cur = conn.cursor()
+            
+            cur.execute(
+                "DELETE FROM pr WHERE serial_number =%s;",
+                (sn.upper(),)
+            )  
+            conn.commit()    
+            print(f"delete PR: {sn}")
+        except psycopg2.Error as e:
+            print(e)
+        
+        return redirect(url_for("tables.table_data", tab="pr"))
+
+@tables.route("/addPR",methods=["POST"])
+def add_to_PR():
+    date = datetime.now(timezone(timedelta(hours=8)))
+    if request.method == "POST":
+        sn = request.form.get("sn")
+        try:
+            print("IN FUNCTION!")
+            conn = get_db_connection().getconn()
+            cur = conn.cursor() 
+            
+            cur.execute(
+                "SELECT * FROM asset_data WHERE serial_number = %s;",
+                (sn,)
+            )
+            data_to_add = cur.fetchall()[0]
+            print(data_to_add[0])
+            cur.execute(
+                "INSERT INTO pr (type,serial_number,information,store,status,date) values (%s,%s,%s,%s,%s,%s);",
+                (data_to_add[0],data_to_add[1],data_to_add[2],data_to_add[3],"PENDING",date.strftime("%Y-%m-%d %H:%M:%S"),)
+            )
+            conn.commit()
+        except psycopg2.Error as e:
+            print(e)
+        
+        return redirect(url_for("tables.table_data", tab="data"))
