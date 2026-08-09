@@ -37,85 +37,153 @@
 
         <!-- Tab buttons -->
         <div class="tab-menu">
-            <button class="tab-btn active" onclick="openTab(event, 'IN')">IN</button>
-            <button class="tab-btn" onclick="openTab(event, 'OUT')">OUT</button>
-            <button class="tab-btn" onclick="openTab(event, 'Service')">Service</button>
-            
+            <button class="tab-btn active" onclick="openTab(event, 'IN', 'tabcontent-outer')">IN</button>
+            <button class="tab-btn" onclick="openTab(event, 'OUT', 'tabcontent-outer')">OUT</button>
+            <button class="tab-btn" onclick="openTab(event, 'Service', 'tabcontent-outer')">Service</button>        
         </div>
-
+        
         <!-- IN -->
-        <div id="IN" class="tabcontent" style="display: block;">
+        <div id="IN" class="tabcontent-outer" style="display: block;">
             <h2>Barang Masuk</h2>
             <p>Pencatatan Barang Masuk</p>
 
-            <form action="/add_type" method="POST" class="add-type-form">
-                <input type="text" name="add_type" id="add_type" placeholder="Tambah tipe baru...">
-                <input type="submit" value="+ ADD TYPE">
-            </form>
+            <div class="sub">
+                <!-- Tab buttons -->
+                <div class="tab-menu">
+                    <button class="tab-btn active" onclick="openTab(event, 'SN', 'tabcontent-inner')">SN</button>
+                    <button class="tab-btn" onclick="openTab(event, 'NON-SN', 'tabcontent-inner')">NON-SN</button>    
+                </div>
 
+                <!-- SN -->
+                <div id="SN" class="tabcontent-inner" style="display: block;">
+                    <form action="/add_type" method="POST" class="add-type-form">
+                        <input type="text" name="add_type" id="add_type" placeholder="Tambah tipe baru...">
+                        <input type="submit" value="+ ADD TYPE">
+                    </form>
+                    <div class="grid-container">
+                        <form action="/submit" method="POST">
+                            <div class="radio-container">
+                                <div class="radio-group field-full">
+                                    <p>Status Barang:</p>
+                                    <label class="radio-option">
+                                        <input type="radio" id="statusNormal" name="statusBarang" value="Normal" checked>
+                                        <span>Normal</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" id="statusPR" name="statusBarang" value="Perlu PR">
+                                        <span>Perlu PR</span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <h1>PLACE HOLDER</h1>
+                                </div>
+                            </div>
 
-            <div class="grid-container">
-                <form action="/submit" method="POST">
-                    <div class="radio-container">
-                        <div>
-                            <!-- TO BE A REPORT FOR ITEM IN -->
-                        </div>
-                        <div class="radio-group field-full">
-                            <p>Status Barang:</p>
-                            <label class="radio-option">
-                                <input type="radio" id="statusNormal" name="statusBarang" value="Normal" checked>
-                                <span>Normal</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" id="statusPR" name="statusBarang" value="Perlu PR">
-                                <span>Perlu PR</span>
-                            </label>
-                        </div>
+                            <div class="field">
+                                <div class="field">
+                                    <label for="usernamein">Nama</label>
+                                    <input type="text" id="usernamein" name="usernamein" required>
+                                </div>
+                                <div class="field">
+                                    <label for="serialin">Nomor Serial</label>
+                                    <input type="text" id="serialin" name="serialin" required>
+                                </div>
+                                <div class="field">
+                                    <label for="storein">Nama Toko Tercantum</label>
+                                    <input type="text" id="storein" name="storein" required>
+                                </div>
+                                <div class="field">
+                                    <label for="where_from">Lokasi Sebelumnya</label>
+                                    <input type="text" id="where_from" name="where_from" required>
+                                </div>
+                                <div class="field">
+                                    <label for="item">Tipe Barang</label>
+
+                                    <select name="item" id="item" required>
+                                        <option value="">--Pilih tipe--</option>
+                                        {% for type in data_asset %}
+                                            <option value="{{type[0]}}">{{type[0]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
+                                </div>
+                                <div class="field-full" style="padding-top: 10px;">
+                                    <label for="commentin">Info:</label>
+                                    <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan barang..." ></textarea>
+                                </div>
+                                <div class="submit-wrap">
+                                    <input type="submit" value="SUBMIT BARANG MASUK">
+                                </div>
+                            </div>
+                        </form>
                     </div>
+                </div>
 
-                    <div class="field">
-                        <div class="field">
-                            <label for="usernamein">Nama</label>
-                            <input type="text" id="usernamein" name="usernamein" required>
-                        </div>
-                        <div class="field">
-                            <label for="serialin">Nomor Serial</label>
-                            <input type="text" id="serialin" name="serialin" required>
-                        </div>
-                        <div class="field">
-                            <label for="storein">Nama Toko Tercantum</label>
-                            <input type="text" id="storein" name="storein" required>
-                        </div>
-                        <div class="field">
-                            <label for="where_from">Lokasi Sebelumnya</label>
-                            <input type="text" id="where_from" name="where_from" required>
-                        </div>
-                        <div class="field">
-                            <label for="item">Tipe Barang</label>
+                <!-- NON-SN -->
+                <div id="NON-SN" class="tabcontent-inner" style="display: none;">
+                    <form action="/add_type" method="POST" class="add-type-form">
+                        <input type="text" name="add_type" id="add_type" placeholder="Tambah tipe baru...">
+                        <input type="submit" value="+ ADD TYPE">
+                    </form>
+                    <div class="grid-container">
+                        <form action="/submit-nonSN" method="POST">
+                            <div class="radio-container">
+                                <div>
+                                   <h1>PLACE HOLDER</h1>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="field" style="padding-bottom: 10px;">
+                                    <label for="usernamein">Nama</label>
+                                    <input type="text" id="usernamein" name="usernamein" required>
+                                </div>
+                                <div>
+                                    <label for="numberIn">Pilih Jumlah</label>
+                                    <div class="qty-chooser" id="qty-chooser">
+                                        <button type="button" class="qc-btn minus" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
+                                        <input
+                                            type="number"
+                                            id="qty-input"
+                                            name="quantity"
+                                            class="qc-input"
+                                            value="1"
+                                            min="0"
+                                            max="9999"
+                                            step="1"
+                                            inputmode="numeric"
+                                            aria-describedby="qty-error"
+                                        />
+                                        <button type="button" class="qc-btn plus" id="qty-plus" aria-label="Increase quantity">&plus;</button>
+                                    </div>
+                                    <p class="qc-error" id="qty-error" role="alert"></p>
+                                </div>
+                                <div class="field">
+                                    <label for="item">Tipe Barang</label>
 
-                            <select name="item" id="item" required>
-                                <option value="">--Pilih tipe--</option>
-                                {% for type in data_asset %}
-                                    <option value="{{type[0]}}">{{type[0]}}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
-                        </div>
-                        <div class="field-full" style="padding-top: 10px;">
-                            <label for="commentin">Info:</label>
-                            <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan barang..." ></textarea>
-                        </div>
-                        <div class="submit-wrap">
-                            <input type="submit" value="SUBMIT BARANG MASUK">
-                        </div>
+                                    <select name="item" id="item" required>
+                                        <option value="">--Pilih tipe--</option>
+                                        {% for type in data_asset %}
+                                            <option value="{{type[0]}}">{{type[0]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
+                                </div>
+                                <div class="field-full" style="padding-top: 10px;">
+                                    <label for="commentin">Info:</label>
+                                    <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan barang..." ></textarea>
+                                </div>
+                                <div class="submit-wrap">
+                                    <input type="submit" value="SUBMIT BARANG MASUK">
+                                </div>
+                            </div>
+                        </form>
                     </div>
-
-                </form>
+                </div>
             </div>
         </div>
 
         <!-- OUT -->
-        <div id="OUT" class="tabcontent" style="display: none;">
+        <div id="OUT" class="tabcontent-outer" style="display: none;">
             <h2>Barang Keluar</h2>
             <p>Pencatatan Barang Keluar</p>
             <div class="grid-container">
@@ -163,7 +231,7 @@
         </div>
 
         <!-- Service -->
-        <div id="Service" class="tabcontent" style="display: none;">
+        <div id="Service" class="tabcontent-outer" style="display: none;">
             <h2>Service</h2>
             <p>Pencatatan Perbaikan Barang</p>
             <div class="grid-container">
@@ -208,7 +276,7 @@
 
     <script>
 
-        document.querySelectorAll('.tabcontent').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.tabcontent-outer').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById('{{tab}}').style.display = 'block';
 
@@ -231,21 +299,95 @@
             });         
         }
 
-        function openTab(evt, tabName) {
-            var i, tabcontent;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            var tabbtn = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tabbtn.length; i++) {
-                tabbtn[i].classList.remove("active");
-            }
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.classList.add("active");
+        function openTab(evt, tabName, className) {
+            document.querySelectorAll(`.${className}`).forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).style.display = 'block';
+            evt.currentTarget.classList.add('active');
         }
 
-    </script>
 
+        (function(){
+            const MIN = 0;
+            const MAX = 9999;
+            const STEP = 1;
+        
+            const wrap    = document.getElementById('qty-chooser');
+            const input   = document.getElementById('qty-input');
+            const minusBtn= document.getElementById('qty-minus');
+            const plusBtn = document.getElementById('qty-plus');
+            const errorEl = document.getElementById('qty-error');
+        
+            function clamp(n){
+            if (isNaN(n)) return MIN;
+            return Math.min(MAX, Math.max(MIN, n));
+            }
+        
+            function playPulse(){
+            input.classList.remove('qc-pulse');
+            // force reflow so the animation can restart
+            void input.offsetWidth;
+            input.classList.add('qc-pulse');
+            }
+        
+            function playShake(){
+            wrap.classList.remove('qc-shake');
+            void wrap.offsetWidth;
+            wrap.classList.add('qc-shake');
+            }
+        
+            function updateButtonState(n){
+            minusBtn.disabled = n <= MIN;
+            plusBtn.disabled  = n >= MAX;
+            }
+        
+            function setValue(n){
+            const attempted = n;
+            const clamped = clamp(n);
+            input.value = clamped;
+            updateButtonState(clamped);
+            errorEl.textContent = '';
+        
+            if (attempted !== clamped) {
+                playShake();
+            } else {
+                playPulse();
+            }
+            }
+        
+            minusBtn.addEventListener('click', () => {
+            setValue((parseInt(input.value, 10) || 0) - STEP);
+            });
+        
+            plusBtn.addEventListener('click', () => {
+            setValue((parseInt(input.value, 10) || 0) + STEP);
+            });
+        
+            input.addEventListener('input', () => {
+            const raw = input.value;
+            if (raw === '') { errorEl.textContent = ''; return; }
+            const n = Number(raw);
+            if (isNaN(n) || !Number.isInteger(n)) {
+                errorEl.textContent = 'Enter a whole number.';
+            } else if (n < MIN || n > MAX) {
+                errorEl.textContent = `Must be between ${MIN} and ${MAX}.`;
+            } else {
+                errorEl.textContent = '';
+            }
+            });
+        
+            input.addEventListener('blur', () => {
+            setValue(parseInt(input.value, 10));
+            });
+        
+            input.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp')   { e.preventDefault(); plusBtn.click(); }
+            if (e.key === 'ArrowDown') { e.preventDefault(); minusBtn.click(); }
+            });
+        
+            // init disabled state on load, no animation
+            updateButtonState(clamp(parseInt(input.value, 10)));
+        })();
+    </script>
 </body>
 </html>

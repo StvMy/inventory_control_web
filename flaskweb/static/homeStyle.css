@@ -105,20 +105,20 @@ body {
 }
 
 /* ── Tab content panel ── */
-.tabcontent {
+.tabcontent-outer {
     background: #fff;
     border-radius: 0 12px 12px 12px;
     padding: 32px 36px;
     display: grid;
     color: #1a3d22;
 }
-.tabcontent h2 {
+.tabcontent-outer h2 {
     font-size: 20px;
     font-weight: 700;
     color: #1a5c2a;
     margin-bottom: 4px;
 }
-.tabcontent > p {
+.tabcontent-outer > p {
     font-size: 13px;
     color: #5a8a67;
     margin-bottom: 24px;
@@ -288,7 +288,7 @@ body {
 /* ── Tablet ── */
 @media (max-width: 768px) {
     .main { max-width: 100%; margin: 24px auto; padding: 0 16px 48px; }
-    .tabcontent { padding: 24px 24px; }
+    .tabcontent-outer { padding: 24px 24px; }
 }
 
 /* ── Phone ── */
@@ -299,7 +299,7 @@ body {
     .tab-btn { flex: 1 1 auto; padding: 11px 14px; text-align: center; }
     .grid-container form { grid-template-columns: 1fr; }
     .field-full, .submit-wrap { grid-column: 1; }
-    .tabcontent { padding: 20px 16px; border-radius: 0 0 12px 12px; }
+    .tabcontent-outer { padding: 20px 16px; border-radius: 0 0 12px 12px; }
     .add-type-form { flex-direction: column; }
     .add-type-form input[value = "+ ADD TYPE"] { width: 100%; }
     .radio-group { gap: 8px 12px; }
@@ -312,5 +312,109 @@ body {
     .header h1 { font-size: 17px; }
     .header p { font-size: 11px; }
     .tab-btn { font-size: 12px; padding: 10px 8px; }
-    .tabcontent h2 { font-size: 18px; }
+    .tabcontent-outer h2 { font-size: 18px; }
+}
+
+/* -- Number Chooser -- */
+.qty-chooser{
+--qc-ink: #1c2126;
+--qc-line: #d9dee3;
+--qc-line-strong: #b7c0c9;
+--qc-surface: #ffffff;
+--qc-surface-sunken: #f4f6f8;
+--qc-accent: #2a5b52;
+--qc-accent-soft: #e6efec;
+--qc-danger: #a3402f;
+--qc-radius: 8px;
+
+display: inline-flex;
+align-items: stretch;
+border: 1px solid var(--qc-line-strong);
+border-radius: var(--qc-radius);
+overflow: hidden;
+background: var(--qc-surface);
+width: 100%;
+max-width: 220px;
+font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.qty-chooser:focus-within{
+border-color: var(--qc-accent);
+box-shadow: 0 0 0 3px var(--qc-accent-soft);
+}
+
+.qty-chooser .qc-btn{
+flex: 0 0 44px;
+display: flex;
+align-items: center;
+justify-content: center;
+background: var(--qc-surface-sunken);
+border: none;
+color: var(--qc-ink);
+font-size: 18px;
+line-height: 1;
+cursor: pointer;
+user-select: none;
+transition: background .12s ease, transform .12s ease;
+}
+
+.qty-chooser .qc-btn:hover{ background: var(--qc-line); }
+.qty-chooser .qc-btn:active{ transform: scale(0.92); }
+
+.qty-chooser .qc-btn:disabled{
+color: var(--qc-line-strong);
+background: var(--qc-surface-sunken);
+cursor: not-allowed;
+transform: none;
+}
+
+.qty-chooser .qc-btn.minus{ border-right: 1px solid var(--qc-line); }
+.qty-chooser .qc-btn.plus{ border-left: 1px solid var(--qc-line); }
+
+.qty-chooser .qc-input{
+flex: 1 1 auto;
+width: 100%;
+min-width: 0;
+border: none;
+outline: none;
+text-align: center;
+font-size: 15px;
+font-weight: 600;
+color: var(--qc-ink);
+background: var(--qc-surface);
+-moz-appearance: textfield;
+transition: color .15s ease;
+}
+.qty-chooser .qc-input::-webkit-outer-spin-button,
+.qty-chooser .qc-input::-webkit-inner-spin-button{
+-webkit-appearance: none;
+margin: 0;
+}
+
+/* pulse animation played on valid change */
+.qty-chooser .qc-input.qc-pulse{
+animation: qc-pulse 0.28s ease;
+}
+@keyframes qc-pulse{
+0%   { transform: scale(1); }
+40%  { transform: scale(1.12); color: var(--qc-accent); }
+100% { transform: scale(1); }
+}
+
+/* shake animation played on invalid/out-of-range attempt */
+.qty-chooser.qc-shake{
+animation: qc-shake 0.32s ease;
+}
+@keyframes qc-shake{
+0%, 100% { transform: translateX(0); }
+25%      { transform: translateX(-4px); }
+75%      { transform: translateX(4px); }
+}
+
+.qc-error{
+font-size: 12px;
+color: var(--qc-danger);
+margin: 6px 0 0;
+min-height: 16px;
+font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
 }
