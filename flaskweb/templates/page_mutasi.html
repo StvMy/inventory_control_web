@@ -50,12 +50,12 @@
             <div class="sub">
                 <!-- Tab buttons -->
                 <div class="tab-menu">
-                    <button class="tab-btn active" onclick="openTab(event, 'SN', 'tabcontent-inner')">SN</button>
-                    <button class="tab-btn" onclick="openTab(event, 'NON-SN', 'tabcontent-inner')">NON-SN</button>    
+                    <button class="tab-btn active" onclick="openTab(event, 'SN-IN', 'tabcontent-inner')">SN</button>
+                    <button class="tab-btn" onclick="openTab(event, 'NON-SN-IN', 'tabcontent-inner')">NON-SN</button>    
                 </div>
 
                 <!-- SN -->
-                <div id="SN" class="tabcontent-inner" style="display: block;">
+                <div id="SN-IN" class="tabcontent-inner" style="display: block;">
                     <form action="/add_type" method="POST" class="add-type-form">
                         <input type="text" name="add_type" id="add_type" placeholder="Tambah tipe baru...">
                         <input type="submit" value="+ ADD TYPE">
@@ -74,9 +74,9 @@
                                         <span>Perlu PR</span>
                                     </label>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <h1>PLACE HOLDER</h1>
-                                </div>
+                                </div>-->
                             </div>
 
                             <div class="field">
@@ -101,7 +101,7 @@
 
                                     <select name="item" id="item" required>
                                         <option value="">--Pilih tipe--</option>
-                                        {% for type in data_asset %}
+                                        {% for type in typesSN %}
                                             <option value="{{type[0]}}">{{type[0]}}</option>
                                         {% endfor %}
                                     </select>
@@ -120,18 +120,18 @@
                 </div>
 
                 <!-- NON-SN -->
-                <div id="NON-SN" class="tabcontent-inner" style="display: none;">
+                <div id="NON-SN-IN" class="tabcontent-inner" style="display: none;">
                     <form action="/add_type" method="POST" class="add-type-form">
-                        <input type="text" name="add_type" id="add_type" placeholder="Tambah tipe baru...">
+                        <input type="text" name="add_type_nonsn" id="add_type_nonsn" placeholder="Tambah tipe baru...">
                         <input type="submit" value="+ ADD TYPE">
                     </form>
                     <div class="grid-container">
                         <form action="/submit-nonSN" method="POST">
-                            <div class="radio-container">
+                            <!-- <div class="radio-container">
                                 <div>
                                    <h1>PLACE HOLDER</h1>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="field">
                                 <div class="field" style="padding-bottom: 10px;">
                                     <label for="usernamein">Nama</label>
@@ -162,7 +162,7 @@
 
                                     <select name="item" id="item" required>
                                         <option value="">--Pilih tipe--</option>
-                                        {% for type in data_asset %}
+                                        {% for type in typesnonSN %}
                                             <option value="{{type[0]}}">{{type[0]}}</option>
                                         {% endfor %}
                                     </select>
@@ -186,47 +186,107 @@
         <div id="OUT" class="tabcontent-outer" style="display: none;">
             <h2>Barang Keluar</h2>
             <p>Pencatatan Barang Keluar</p>
-            <div class="grid-container">
-                <form action="/out_item" method="POST">
-                    <!-- <div class="radio-container">
-                        <div>
-                            TO BE A REPORT FOR ITEM OUT
-                        </div>
-                        <p>Status Mutasi:</p>
-                        <div class="radio-group">
-                            
-                            <label class="radio-option">
-                                <input type="radio" id="statusMutasi" name="statusMutasi" value="Mutasi" checked>
-                                <span>Mutasi</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" id="statusPinjam" name="statusMutasi" value="Pinjam">
-                                <span>Pinjam</span>
-                            </label>
-                        </div>
-                    </div> -->
-                    <div class="field">
-                        <div class="field">
-                            <label for="usernameout">Nama</label>
-                            <input type="text" id="usernameout" name="usernameout" required>
-                        </div>
-                        <div class="field">
-                            <label for="serialout">Nomor Serial</label>
-                            <input type="text" id="serialout" name="serialout" required>
-                        </div>
-                        <div class="field-full">
-                            <label for="storeout">Toko Tujuan</label>
-                            <input type="text" id="storeout" name="storeout" required>
-                        </div>
-                        <div class="field-full">
-                            <label for="commentout">Info</label>
-                            <textarea id="commentout" name="commentout" rows="4" placeholder="Keterangan barang..." required></textarea>
-                        </div>
-                        <div class="submit-wrap">
-                            <input type="submit" value="SUBMIT BARANG KELUAR">
-                        </div>
+
+
+            <div class="sub">
+                <!-- Tab buttons -->
+                <div class="tab-menu">
+                    <button class="tab-btn active" onclick="openTab(event, 'SN-OUT', 'tabcontent-inner')">SN</button>
+                    <button class="tab-btn" onclick="openTab(event, 'NON-SN-OUT', 'tabcontent-inner')">NON-SN</button>    
+                </div>
+
+                <!-- SN -->
+                <div id="SN-OUT" class="tabcontent-inner" style="display: block;">
+                    <div class="grid-container">
+                        <form action="" method="POST">
+                            <!-- <div class="radio-container">
+                                <div>
+                                    TO BE A REPORT FOR ITEM OUT
+                                </div>
+                                <p>Status Mutasi:</p>
+                                <div class="radio-group">
+                                    
+                                    <label class="radio-option">
+                                        <input type="radio" id="statusMutasi" name="statusMutasi" value="Mutasi" checked>
+                                        <span>Mutasi</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" id="statusPinjam" name="statusMutasi" value="Pinjam">
+                                        <span>Pinjam</span>
+                                    </label>
+                                </div>
+                            </div> -->
+                            <div class="field">
+                                <div class="field">
+                                    <label for="usernameout">Nama</label>
+                                    <input type="text" id="usernameout" name="usernameout" required>
+                                </div>
+                                <div class="field">
+                                    <label for="serialout">Nomor Serial</label>
+                                    <input type="text" id="serialout" name="serialout" required>
+                                </div>
+                                <div class="field-full">
+                                    <label for="storeout">Toko Tujuan</label>
+                                    <input type="text" id="storeout" name="storeout" required>
+                                </div>
+                                <div class="field-full">
+                                    <label for="commentout">Info</label>
+                                    <textarea id="commentout" name="commentout" rows="4" placeholder="Keterangan barang..." required></textarea>
+                                </div>
+                                <div class="submit-wrap">
+                                    <input type="submit" value="SUBMIT BARANG KELUAR">
+                                </div>
+                            </div>
+                        </form>
+                    </div>   
+                </div>
+                
+                
+                <!-- NON SN -->
+                <div id="NON-SN-OUT" class="tabcontent-inner" style="display: none;">
+                    <div class="grid-container">
+                        <form action="" method="POST">
+                            <!-- <div class="radio-container">
+                                <div>
+                                   <h1>PLACE HOLDER</h1>
+                                </div>
+                            </div>-->
+                            <div class="field">
+                                <div class="field" style="padding-bottom: 10px;">
+                                    <label for="usernamein">Nama</label>
+                                    <input type="text" id="usernamein" name="usernamein" required>
+                                </div>
+                                <div>
+                                    <label for="numberIn">Pilih Jumlah</label>
+                                    <div class="qty-chooser" id="qty-chooser">
+                                        <button type="button" class="qc-btn minus" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
+                                        <input
+                                            type="number"
+                                            id="qty-input"
+                                            name="quantity"
+                                            class="qc-input"
+                                            value="1"
+                                            min="0"
+                                            max="9999"
+                                            step="1"
+                                            inputmode="numeric"
+                                            aria-describedby="qty-error"
+                                        />
+                                        <button type="button" class="qc-btn plus" id="qty-plus" aria-label="Increase quantity">&plus;</button>
+                                    </div>
+                                    <p class="qc-error" id="qty-error" role="alert"></p>
+                                </div>
+                                <div class="field-full" style="padding-top: 10px;">
+                                    <label for="commentin">Info:</label>
+                                    <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan barang..." ></textarea>
+                                </div>
+                                <div class="submit-wrap">
+                                    <input type="submit" value="SUBMIT BARANG MASUK">
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 

@@ -59,7 +59,8 @@ def table_data():
         pr_sn.append(sn[1])
     print(pr_sn)
     
-    
+
+       
     cur.close()
     conn.close()
     print("close connection")

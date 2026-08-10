@@ -38,13 +38,20 @@ def home():
         cur.execute(
             "SELECT * FROM type_list"
         )
-        all_asset = cur.fetchall()
+        typesSN = cur.fetchall()
+        
+        cur.execute(
+            "SELECT * FROM type_list_nonSN"
+        )
+        typesnonSN = cur.fetchall()
+        
         cur.close()
         conn.close()
         
-    except psycopg2.Error:
+    except psycopg2.Error as e:
+        print (e)
         return render_template("404.html")
-    return render_template("page_mutasi.html",data_asset=all_asset, tab=tab) 
+    return render_template("page_mutasi.html",typesnonSN = typesnonSN ,typesSN = typesSN, tab=tab) 
   
     # cur.execute(
     #     "SELECT * FROM asset_data"
@@ -134,31 +141,43 @@ def submission_type():
     
     # 1. Submission
     if request.method == "POST":
+    
         type_add =request.form.get("add_type")
         if type_add:
+            table = "type_list"
+            print("TO SN")
+        else:
+            type_add =request.form.get("add_type_nonsn")
+            table = "type_list_nonsn"
+            print("TO NON SN")
+            
+        if type_add:
             try:
+                query = f"SELECT * FROM {table} WHERE types = %s"
+                print(query)
                 cur.execute(
-                    "SELECT * FROM type_list WHERE types = %s",
+                    query,
                     (type_add.upper(),)
                 )
                 if(cur.fetchall()):
                     flash("Nomor Serial sudah terdaftar","error")
-                else:              
+                else: 
+                    query = f"INSERT INTO {table} values(%s)"         
                     cur.execute(
-                        "INSERT INTO type_list (types) values(%s);",
+                        query,
                         (type_add.upper(),)
                     )
                     
                     # 3. Commit changes and close connections
                     conn.commit()
-                    cur.close()
-                    conn.close()
-                
-            except psycopg2.Error:
+        
+            except psycopg2.Error as e:
+                print(e)
                 conn.rollback()  # important: clear failed transaction
-                cur.close()
-                conn.close()
-        return redirect(request.referrer)
+                
+        cur.close()
+        conn.close()
+        return redirect(url_for("views.home"))
     
 @views.route('/remove_type', methods=["POST"])
 def submission_remove_type():
@@ -184,18 +203,16 @@ def submission_remove_type():
                 
                 # 3. Commit changes and close connections
                 conn.commit()
-                cur.close()
-                conn.close()
                 print("OK")
             else:
                 flash("Nomor Serial tidak terdaftar","error")
         except psycopg2.Error as e:
             print(e)
             conn.rollback()  # important: clear failed transaction
-            cur.close()
-            conn.close()
+        cur.close()
+        conn.close()
 
-    return redirect(request.referrer)
+        return redirect(url_for("views.home"))
    
     
 @views.route('/out_item', methods=["POST"])
@@ -235,8 +252,10 @@ def submission_out():
                 conn.commit()
                 cur.close()
                 conn.close()
-                return redirect(request.referrer)
+                return(redirect(url_for("views.home",tab="OUT")))
             else:
+                cur.close()
+                conn.close()
                 flash("Nomor Serial tidak terdaftar","error")
                 return(redirect(url_for("views.home",tab="OUT")))
         except psycopg2.Error as e:
@@ -244,7 +263,7 @@ def submission_out():
             conn.rollback()  # important: clear failed transaction
             cur.close()
             conn.close()
-            return redirect(url_for("views.home"))
+            return(redirect(url_for("views.home",tab="OUT")))
 
   
     
@@ -289,7 +308,7 @@ def submission_service():
                 conn.commit()
                 cur.close()
                 conn.close()
-                return redirect(request.referrer)
+                return redirect(url_for("views.home",tab="Service"))
             else:
                 flash("Nomor Serial tidak terdaftar","error")
                 return redirect(url_for("views.home",tab="Service"))
@@ -298,7 +317,7 @@ def submission_service():
             conn.rollback()  # important: clear failed transaction
             cur.close()
             conn.close() 
-            return redirect(request.referrer) 
+            return redirect(url_for("views.home",tab="Service")) 
     
     
     
