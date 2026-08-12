@@ -222,17 +222,6 @@
                                     <input type="text" id="usernameout" name="usernameout" required>
                                 </div>
                                 <div class="field">
-                                    <label for="item">Tipe Barang</label>
-
-                                    <select name="item" id="item" required>
-                                        <option value="">--Pilih tipe--</option>
-                                        {% for type in typesnonSN %}
-                                            <option value="{{type[0]}}">{{type[0]}}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
-                                </div>
-                                <div class="field">
                                     <label for="serialout">Nomor Serial</label>
                                     <input type="text" id="serialout" name="serialout" required>
                                 </div>
@@ -266,6 +255,17 @@
                                 <div class="field" style="padding-bottom: 10px;">
                                     <label for="usernamein">Nama</label>
                                     <input type="text" id="usernamein" name="usernamein" required>
+                                </div>
+                                <div class="field">
+                                    <label for="item">Tipe Barang</label>
+
+                                    <select name="item" id="item" required>
+                                        <option value="">--Pilih tipe--</option>
+                                        {% for type in typesnonSN %}
+                                            <option value="{{type[0]}}">{{type[0]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
                                 </div>
                                 <div class="field">
                                     <label for="numberIn">Pilih Jumlah</label>
