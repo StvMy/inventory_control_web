@@ -29,6 +29,7 @@ def home():
     
     try: 
         tab = request.args.get('tab')
+        tab_inner = request.args.get('tab_inner')
         if tab is None:
             tab = "IN"
             
@@ -51,7 +52,7 @@ def home():
     except psycopg2.Error as e:
         print (e)
         return render_template("404.html")
-    return render_template("page_mutasi.html",typesnonSN = typesnonSN ,typesSN = typesSN, tab=tab) 
+    return render_template("page_mutasi.html",typesnonSN = typesnonSN ,typesSN = typesSN, tab=tab, tab_inner=tab_inner) 
   
     # cur.execute(
     #     "SELECT * FROM asset_data"
@@ -145,10 +146,12 @@ def submission_type():
         type_add =request.form.get("add_type")
         if type_add:
             table = "type_list"
+            tab_inner = "SN-IN"
             print("TO SN")
         else:
             type_add =request.form.get("add_type_nonsn")
             table = "type_list_nonsn"
+            tab_inner = "NON-SN-IN"
             print("TO NON SN")
             
         if type_add:
@@ -177,7 +180,7 @@ def submission_type():
                 
         cur.close()
         conn.close()
-        return redirect(url_for("views.home"))
+        return redirect(url_for("views.home",tab = "IN",tab_inner = tab_inner))
     
 @views.route('/remove_type', methods=["POST"])
 def submission_remove_type():

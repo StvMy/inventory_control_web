@@ -137,6 +137,17 @@
                                     <label for="usernamein">Nama</label>
                                     <input type="text" id="usernamein" name="usernamein" required>
                                 </div>
+                                <div class="field">
+                                    <label for="item">Tipe Barang</label>
+
+                                    <select name="item" id="item" required>
+                                        <option value="">--Pilih tipe--</option>
+                                        {% for type in typesnonSN %}
+                                            <option value="{{type[0]}}">{{type[0]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
+                                </div>
                                 <div>
                                     <label for="numberIn">Pilih Jumlah</label>
                                     <div class="qty-chooser" id="qty-chooser">
@@ -156,17 +167,6 @@
                                         <button type="button" class="qc-btn plus" id="qty-plus" aria-label="Increase quantity">&plus;</button>
                                     </div>
                                     <p class="qc-error" id="qty-error" role="alert"></p>
-                                </div>
-                                <div class="field">
-                                    <label for="item">Tipe Barang</label>
-
-                                    <select name="item" id="item" required>
-                                        <option value="">--Pilih tipe--</option>
-                                        {% for type in typesnonSN %}
-                                            <option value="{{type[0]}}">{{type[0]}}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
                                 </div>
                                 <div class="field-full" style="padding-top: 10px;">
                                     <label for="commentin">Info:</label>
@@ -222,6 +222,17 @@
                                     <input type="text" id="usernameout" name="usernameout" required>
                                 </div>
                                 <div class="field">
+                                    <label for="item">Tipe Barang</label>
+
+                                    <select name="item" id="item" required>
+                                        <option value="">--Pilih tipe--</option>
+                                        {% for type in typesnonSN %}
+                                            <option value="{{type[0]}}">{{type[0]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
+                                </div>
+                                <div class="field">
                                     <label for="serialout">Nomor Serial</label>
                                     <input type="text" id="serialout" name="serialout" required>
                                 </div>
@@ -231,7 +242,7 @@
                                 </div>
                                 <div class="field-full">
                                     <label for="commentout">Info</label>
-                                    <textarea id="commentout" name="commentout" rows="4" placeholder="Keterangan barang..." required></textarea>
+                                    <textarea id="commentout" name="commentout" rows="4" placeholder="Keterangan penggunaan..." required></textarea>
                                 </div>
                                 <div class="submit-wrap">
                                     <input type="submit" value="SUBMIT BARANG KELUAR">
@@ -256,7 +267,7 @@
                                     <label for="usernamein">Nama</label>
                                     <input type="text" id="usernamein" name="usernamein" required>
                                 </div>
-                                <div>
+                                <div class="field">
                                     <label for="numberIn">Pilih Jumlah</label>
                                     <div class="qty-chooser" id="qty-chooser">
                                         <button type="button" class="qc-btn minus" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
@@ -276,14 +287,20 @@
                                     </div>
                                     <p class="qc-error" id="qty-error" role="alert"></p>
                                 </div>
+                                <div class="field">
+                                    <label for="destination">Tujuan</label>
+                                    <input type="text" id="usernamein" name="usernamein" required>
+                                </div>
                                 <div class="field-full" style="padding-top: 10px;">
                                     <label for="commentin">Info:</label>
-                                    <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan barang..." ></textarea>
+                                    <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan penggunaan (penggantian/penambahan/perbaikan)..." ></textarea>
                                 </div>
                                 <div class="submit-wrap">
                                     <input type="submit" value="SUBMIT BARANG MASUK">
                                 </div>
                             </div>
+
+
                         </form>
                     </div>
                 </div>
@@ -335,10 +352,16 @@
     </div>
 
     <script>
+        // if ('{{tab}}'){
+        //     document.querySelectorAll('.tabcontent-outer').forEach(el => el.style.display = 'none');
+        //     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        //     document.getElementById('{{tab}}').style.display = 'block';
 
-        document.querySelectorAll('.tabcontent-outer').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById('{{tab}}').style.display = 'block';
+        //     document.querySelectorAll('.tabcontent-inner').forEach(el => el.style.display = 'none');
+        //     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        //     document.getElementById('{{tab}}').style.display = 'block';
+        // }
+
 
         
         function removebtn(){
@@ -360,10 +383,28 @@
         }
 
         function openTab(evt, tabName, className) {
-            document.querySelectorAll(`.${className}`).forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabName).style.display = 'block';
-            evt.currentTarget.classList.add('active');
+            if (className === "tabcontent-outer" && (tabName == "IN" || tabName == "OUT")){
+                console.log("outer")
+                document.querySelectorAll('.tabcontent-outer').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+                document.getElementById(tabName).style.display = 'block';
+                document.getElementById("SN-IN").style.display = 'block';
+                document.getElementById("SN-OUT").style.display = 'block';
+                evt.currentTarget.classList.add('active');
+            }
+            else if (className === "tabcontent-inner"){
+                console.log("inner")
+                document.querySelectorAll('.tabcontent-inner').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+                document.getElementById(tabName).style.display = 'block';
+                evt.currentTarget.classList.add('active');
+            }
+            else{
+                document.querySelectorAll(`.${className}`).forEach(el => el.style.display = 'none'); 
+                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active')); 
+                document.getElementById(tabName).style.display = 'block'; 
+                evt.currentTarget.classList.add('active');       
+            }
         }
 
 
