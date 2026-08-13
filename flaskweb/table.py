@@ -26,7 +26,8 @@ def get_db_connection():
 @tables.route("/tables")
 def table_data():
 
-    conn = get_db_connection().getconn()
+    poolcon = get_db_connection()
+    conn = poolcon.getconn()
     cur = conn.cursor()
 
 
@@ -54,15 +55,12 @@ def table_data():
     services = cur.fetchall()
     print("fetch")
     
-    pr_sn = []
-    for sn in pr_list:
-        pr_sn.append(sn[1])
+    pr_sn = [sn[1] for sn in pr_list]
     print(pr_sn)
     
 
-       
     cur.close()
-    conn.close()
+    poolcon.putconn(conn)
     print("close connection")
     
     print(tab)
@@ -73,7 +71,8 @@ def table_data():
 @tables.route("/delete_row_mut",methods=["POST"])
 def del_row_mut():
     if request.method == "POST":    
-        conn = get_db_connection().getconn()
+        poolcon = get_db_connection()
+        conn = poolcon.getconn()
         cur = conn.cursor()
         try:   
             sn = request.form.get("sn")
@@ -89,7 +88,7 @@ def del_row_mut():
             print(e)
 
         cur.close()
-        conn.close()
+        poolcon.putconn(conn)
         
         return redirect(url_for("tables.table_data", tab="mutasi"))
     
@@ -107,7 +106,8 @@ def ed_row_mut():
         idunique = request.form.get("id")
 
         try:   
-            conn = get_db_connection().getconn()
+            poolcon = get_db_connection()
+            conn = poolcon.getconn()
             cur = conn.cursor()
             
             print(f"{sn}----//----")
@@ -125,7 +125,7 @@ def ed_row_mut():
 
 
         cur.close()
-        conn.close()
+        poolcon.putconn(conn)
         
         return redirect(url_for("tables.table_data", tab="mutasi"))
 
@@ -133,7 +133,8 @@ def ed_row_mut():
 @tables.route("/delete_row_data",methods=["POST"])
 def del_row_data():
     if request.method == "POST":    
-        conn = get_db_connection().getconn()
+        poolcon = get_db_connection()
+        conn = poolcon.getconn()
         cur = conn.cursor()
         try:   
             sn = request.form.get("sn")
@@ -148,7 +149,7 @@ def del_row_data():
             print(e)
 
         cur.close()
-        conn.close()
+        poolcon.putconn(conn)
         
         return redirect(url_for("tables.table_data", tab="data"))
     
@@ -162,7 +163,8 @@ def ed_row_data():
         
         
         try:   
-            conn = get_db_connection().getconn()
+            poolcon = get_db_connection()
+            conn = poolcon.getconn()
             cur = conn.cursor()
             
             print(f"{sn}----//----")
@@ -179,7 +181,7 @@ def ed_row_data():
 
 
         cur.close()
-        conn.close()
+        poolcon.putconn(conn)
         
         return redirect(url_for("tables.table_data", tab="data"))
     
@@ -191,7 +193,8 @@ def pr_done():
         sn = request.form.get("sn")
         
         try:
-            conn = get_db_connection().getconn()
+            poolcon = get_db_connection()
+            conn = poolcon.getconn()
             cur = conn.cursor()
             
             cur.execute(
@@ -201,7 +204,9 @@ def pr_done():
             conn.commit()    
         except psycopg2.Error as e:
             print(e)
-        
+            
+        cur.close()
+        poolcon.putconn(conn)
         return redirect(url_for("tables.table_data", tab="pr"))
 
 @tables.route("/delete_PR",methods=["POST"])
@@ -210,7 +215,8 @@ def pr_delete():
         sn = request.form.get("sn")
         
         try:
-            conn = get_db_connection().getconn()
+            poolcon = get_db_connection()
+            conn = poolcon.getconn()
             cur = conn.cursor()
             
             cur.execute(
@@ -221,7 +227,8 @@ def pr_delete():
             print(f"delete PR: {sn}")
         except psycopg2.Error as e:
             print(e)
-        
+            
+        poolcon.putconn(conn)
         return redirect(url_for("tables.table_data", tab="pr"))
 
 @tables.route("/addPR",methods=["POST"])
@@ -231,7 +238,8 @@ def add_to_PR():
         sn = request.form.get("sn")
         try:
             print("IN FUNCTION!")
-            conn = get_db_connection().getconn()
+            poolcon = get_db_connection()
+            conn = poolcon.getconn()
             cur = conn.cursor() 
             
             cur.execute(
@@ -247,5 +255,6 @@ def add_to_PR():
             conn.commit()
         except psycopg2.Error as e:
             print(e)
-        
+            
+        poolcon.putconn(conn)
         return redirect(url_for("tables.table_data", tab="data"))

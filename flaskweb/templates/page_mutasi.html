@@ -4,9 +4,12 @@
 <head>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="../static/homeStyle.css">
 </head>
 <body>
@@ -39,7 +42,8 @@
         <div class="tab-menu">
             <button class="tab-btn active" onclick="openTab(event, 'IN', 'tabcontent-outer')">IN</button>
             <button class="tab-btn" onclick="openTab(event, 'OUT', 'tabcontent-outer')">OUT</button>
-            <button class="tab-btn" onclick="openTab(event, 'Service', 'tabcontent-outer')">Service</button>        
+            <button class="tab-btn" onclick="openTab(event, 'Service', 'tabcontent-outer')">Service</button> 
+            <button class="tab-btn" onclick="openTab(event, 'Mutasi', 'tabcontent-outer')">Mutasi</button>            
         </div>
         
         <!-- IN -->
@@ -126,7 +130,7 @@
                         <input type="submit" value="+ ADD TYPE">
                     </form>
                     <div class="grid-container">
-                        <form action="/submit-nonSN" method="POST">
+                        <form action="/submit_nonsn" method="POST">
                             <!-- <div class="radio-container">
                                 <div>
                                    <h1>PLACE HOLDER</h1>
@@ -134,13 +138,17 @@
                             </div> -->
                             <div class="field">
                                 <div class="field" style="padding-bottom: 10px;">
-                                    <label for="usernamein">Nama</label>
-                                    <input type="text" id="usernamein" name="usernamein" required>
+                                    <label for="usernamein_nonsn">Nama</label>
+                                    <input type="text" id="usernamein_nonsn" name="usernamein_nonsn" required>
+                                </div>
+                                <div class="field" style="padding-bottom: 10px;">
+                                    <label for="initiialin_nonsn">lokasi sebelumnya</label>
+                                    <input type="text" id="initiialin_nonsn" name="initiialin_nonsn" required>
                                 </div>
                                 <div class="field">
-                                    <label for="item">Tipe Barang</label>
+                                    <label for="item_nonsn">Tipe Barang</label>
 
-                                    <select name="item" id="item" required>
+                                    <select name="item_nonsn" id="item_nonsn" required>
                                         <option value="">--Pilih tipe--</option>
                                         {% for type in typesnonSN %}
                                             <option value="{{type[0]}}">{{type[0]}}</option>
@@ -150,7 +158,7 @@
                                 </div>
                                 <div>
                                     <label for="numberIn">Pilih Jumlah</label>
-                                    <div class="qty-chooser" id="qty-chooser">
+                                    <div class="qtyin_nonsn" id="qtyin_nonsn">
                                         <button type="button" class="qc-btn minus" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
                                         <input
                                             type="number"
@@ -169,8 +177,8 @@
                                     <p class="qc-error" id="qty-error" role="alert"></p>
                                 </div>
                                 <div class="field-full" style="padding-top: 10px;">
-                                    <label for="commentin">Info:</label>
-                                    <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan barang..." ></textarea>
+                                    <label for="commentin_nonsn">Info:</label>
+                                    <textarea id="commentin_nonsn" name="commentin_nonsn" rows="4" placeholder="Keterangan barang..." ></textarea>
                                 </div>
                                 <div class="submit-wrap">
                                     <input type="submit" value="SUBMIT BARANG MASUK">
@@ -331,6 +339,42 @@
                 </form>
             </div>
         </div>
+
+        <!-- MUTASI -->
+        <div id="Mutasi" class="tabcontent-outer" style="display: none;">
+            <h2>Mutasi</h2>
+            <p>Pencatatan Mutasi Barang dari Toko ke Toko</p>
+            <div class="grid-container">
+                <form action="" method="POST">
+                    <div class="field">
+                        <div class="field">
+                            <label for="usernamemut">Nama</label>
+                            <input type="text" id="usernamemut" name="usernamemut" required>
+                        </div>
+                        <div class="field">
+                            <label for="serialmut">Nomor Serial</label>
+                            <input type="text" id="serialmut" name="serialmut" required>
+                        </div>
+                        <div class="field">
+                            <label for="storefrom">Toko Asal</label>
+                            <input type="text" id="storefrom" name="storefrom" required>
+                        </div>
+                        <div class="field-full">
+                            <label for="storedest">Toko Tujuan</label>
+                            <input type="text" id="storedest" name="storedest" required>
+                        </div>
+                        <div class="field-full">
+                            <label for="commentmut">Info</label>
+                            <textarea id="commentmut" name="commentmut" rows="4" placeholder="Keterangan mutasi..." required></textarea>
+                        </div>
+                        <div class="submit-wrap">
+                            <input type="submit" value="SUBMIT BARANG MUTASI">
+                        </div>
+                    </div>
+                </form>
+            </div>   
+        </div>
+
     </div>
 
     <div class="flashes">

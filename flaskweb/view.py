@@ -33,9 +33,10 @@ def home():
         if tab is None:
             tab = "IN"
             
-        conn = get_db_connection().getconn()
+        poolcon = get_db_connection()
+        conn = poolcon.getconn()
         cur = conn.cursor()
-        
+            
         cur.execute(
             "SELECT * FROM type_list"
         )
@@ -47,7 +48,7 @@ def home():
         typesnonSN = cur.fetchall()
         
         cur.close()
-        conn.close()
+        poolcon.putconn(conn)
         
     except psycopg2.Error as e:
         print (e)
@@ -78,7 +79,8 @@ def home():
 @views.route('/submit', methods=["POST"])
 def submission():
     """ CONNECT TO DATABASE """
-    conn = get_db_connection().getconn()
+    poolcon = get_db_connection()
+    conn = poolcon.getconn()
     cur = conn.cursor()
     
     # 1. Submission
@@ -107,37 +109,81 @@ def submission():
             else:
                 if (sttsBarang == "Perlu PR"):
                     cur.execute(
-                        "INSERT INTO pr (Type,Serial_Number,store, Information, status, date) Values(%s,%s,%s,%s,%s,%s);",
+                        "INSERT INTO pr (Type,Serial_Number,store, Information, status, date) VALUES(%s,%s,%s,%s,%s,%s);",
                         (type_item.upper(),serial.upper(),store.upper(),info.upper(),"PENDING",date.strftime("%Y-%m-%d %H:%M:%S"),)
                     )
                     conn.commit()
                 # 3. Execute SQL
                 cur.execute(
-                    "INSERT INTO asset_data (Type,Serial_Number,store, Information) Values(%s,%s,%s,%s);",
+                    "INSERT INTO asset_data (Type,Serial_Number,store, Information) VALUES(%s,%s,%s,%s);",
                     (type_item.upper(),serial.upper(),store.upper(),info.upper(),)
                 )
                 conn.commit()
                 cur.execute(
-                    "INSERT INTO mutasi (date, serial, initial, destination, info, name, item, item_store_name) Values(%s,%s,%s,%s,%s,%s,%s,%s);",
+                    "INSERT INTO mutasi (date, serial, initial, destination, info, name, item, item_store_name) VALUES(%s,%s,%s,%s,%s,%s,%s,%s);",
                     (date.strftime("%Y-%m-%d %H:%M:%S"),serial.upper(),lokasi_awal.upper(),"IT",info.upper(),username.upper(),type_item.upper(), store.upper())
                 )
                 # 3. Commit changes and close connections
                 conn.commit()
-                cur.close()
-                conn.close()
             
         except psycopg2.Error as e:
             print (e)
             conn.rollback()  # important: clear failed transaction
-            cur.close()
-            conn.close()
+        cur.close()
+        poolcon.putconn(conn)
         return redirect(url_for("views.home"))
-       
+     
+@views.route('/submit_nonsn', methods=["POST"])
+def submission_nonsn():
+    poolcon = get_db_connection()
+    conn = poolcon.getconn()
+    cur = conn.cursor()
     
+    if request.method == "POST":
+        name = request.form.get("usernamein_nonsn")
+        initial = request.form.get("initialin_nonsn")
+        types = request.form.get("item_nonsn")
+        qty = request.form.get("qtyin_nonsn")
+        info = request.form.get("commentin_nonsn")
+        date = datetime.now(timezone(timedelta(hours=8)))
+        try:
+            cur.execute(
+                "SELECT types FROM asset_data_nonsn"
+            )
+            type_nonsn = cur.fetchall()
+            if type_nonsn:
+                cur.execute(
+                    "UPDATE asset_data_nonsn SET qty = qty + %s",
+                    (qty,)
+                )
+                conn.commit()
+            else:
+                cur.execute(
+                    "INSERT INTO asset_data_nonsn (types,qty) VALUES (%s,%s);",
+                    (types.upper(),qty,)
+                )
+                conn.commit()
+            cur.execute(
+                "INSERT INTO mutasi (date, serial, initial, destination, info, name, item, item_store_name) VALUES(%s,%s,%s,%s,%s,%s,%s,%s);",
+                (date.strftime("%Y-%m-%d %H:%M:%S"),"-- NON SN --",initial,"IT",info,name,types,"PARTS",)                
+            )
+            conn.commit()
+
+        except psycopg2.Error as e:
+            print (e)
+            conn.rollback()  # important: clear failed transaction
+        cur.close()
+        poolcon.putconn(conn)
+        return redirect(url_for("views.home"))
+
+
+
+   
 @views.route('/add_type', methods=["POST"])
 def submission_type():
     """ CONNECT TO DATABASE """
-    conn = get_db_connection().getconn()
+    poolcon = get_db_connection()
+    conn = poolcon.getconn()
     cur = conn.cursor()
     
     # 1. Submission
@@ -165,7 +211,7 @@ def submission_type():
                 if(cur.fetchall()):
                     flash("Nomor Serial sudah terdaftar","error")
                 else: 
-                    query = f"INSERT INTO {table} values(%s)"         
+                    query = f"INSERT INTO {table} VALUES(%s)"         
                     cur.execute(
                         query,
                         (type_add.upper(),)
@@ -179,13 +225,14 @@ def submission_type():
                 conn.rollback()  # important: clear failed transaction
                 
         cur.close()
-        conn.close()
+        poolcon.putconn(conn)
         return redirect(url_for("views.home",tab = "IN",tab_inner = tab_inner))
     
 @views.route('/remove_type', methods=["POST"])
 def submission_remove_type():
     """ CONNECT TO DATABASE """
-    conn = get_db_connection().getconn()
+    poolcon = get_db_connection()
+    conn = poolcon.getconn()
     cur = conn.cursor()
     
     # 1. Submission
@@ -213,15 +260,15 @@ def submission_remove_type():
             print(e)
             conn.rollback()  # important: clear failed transaction
         cur.close()
-        conn.close()
-
+        poolcon.putconn(conn)
         return redirect(url_for("views.home"))
    
     
 @views.route('/out_item', methods=["POST"])
 def submission_out():
     """ CONNECT TO DATABASE """
-    conn = get_db_connection().getconn()
+    poolcon = get_db_connection()
+    conn = poolcon.getconn()
     cur = conn.cursor()
 
     # 1. Submission
@@ -242,7 +289,7 @@ def submission_out():
             if data:
                 print(f"data: ----------{data[0][0]}-----------")
                 cur.execute(
-                    "INSERT INTO mutasi (date,serial, initial, destination, info, name, item, item_store_name) Values(%s,%s,%s,%s,%s,%s,%s,%s);",
+                    "INSERT INTO mutasi (date,serial, initial, destination, info, name, item, item_store_name) VALUES(%s,%s,%s,%s,%s,%s,%s,%s);",
                     (date.strftime("%Y-%m-%d %H:%M:%S"),serial.upper(),"IT",store.upper(),info.upper(),username.upper(),data[0][0].upper(), data[0][1].upper(),)
                 )
                 # Commit changes
@@ -264,16 +311,17 @@ def submission_out():
         except psycopg2.Error as e:
             print(e)
             conn.rollback()  # important: clear failed transaction
-            cur.close()
-            conn.close()
-            return(redirect(url_for("views.home",tab="OUT")))
+        cur.close()
+        poolcon.putconn(conn)
+        return(redirect(url_for("views.home",tab="OUT")))
 
   
     
 @views.route('/service', methods=["POST"])
 def submission_service():    
     """ CONNECT TO DATABASE """
-    conn = get_db_connection().getconn()
+    poolcon = get_db_connection()
+    conn = poolcon.getconn()
     cur = conn.cursor()
     if request.method == "POST":
         username = request.form.get("usernameservice")
@@ -290,7 +338,7 @@ def submission_service():
             if data_serial:
                 print(f"%%%%%%%%%%%%%%%%%%%%%%%%%%%{data_serial[0]}")
                 cur.execute(
-                    "INSERT INTO service_history (username,serial,info,item,date) Values(%s,%s,%s,%s,%s); ",
+                    "INSERT INTO service_history (username,serial,info,item,date) VALUES(%s,%s,%s,%s,%s); ",
                     (username.upper(),serial.upper(),info.upper(),data_serial[0],date.strftime("%Y-%m-%d %H:%M:%S"),)
                 )
                 conn.commit()
@@ -318,9 +366,9 @@ def submission_service():
         except psycopg2.Error as e:
             print(e)
             conn.rollback()  # important: clear failed transaction
-            cur.close()
-            conn.close() 
-            return redirect(url_for("views.home",tab="Service")) 
+        cur.close()
+        poolcon.putconn(conn) 
+        return redirect(url_for("views.home",tab="Service")) 
     
     
     
