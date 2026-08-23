@@ -6,11 +6,11 @@ from datetime import datetime, timezone, timedelta
 from timeit import default_timer as timer
 
 def print_train_time(start:float, end:float, customInfo:str):
-  "Prints difference between start and end time."
+    "Prints difference between start and end time."
 
-  total_time = end - start
-  print(f"Difference: {total_time:.3f} seconds {customInfo}")
-  return total_time
+    total_time = end - start
+    print(f"Difference: {total_time:.3f} seconds {customInfo}")
+    return total_time
 
 DB_PARAMS = {
     "minconn":1,
