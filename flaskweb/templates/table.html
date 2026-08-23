@@ -70,7 +70,7 @@
                 <tbody >
                     {% for list in data_mutasi %}
                         <tr class="{% if list[1]|lower == 'it' %}row-in{% else %}row-out{% endif %}" >
-                            <form action="/data/delete_row_mut" method="POST">
+                            <form >
                                 <td ><input type="text" name="row" value="{{loop.index0+1}}"></td>
                                 <td><input type="text" name="date" value="{{list[6]}}" readonly></td>
                                 <td><input type="text" name="name" value="{{list[3]}}" readonly></td>
@@ -83,7 +83,13 @@
                                 <input type="hidden" name="id" value="{{list[8]}}">
                                 <td>
                                     <div class="action-cell">
-                                        <button type="submit" class="btn-delete">DELETE</button>
+                                        <button
+                                            type="button" 
+                                            class="btn-delete triggermutdel-btn"
+                                            data-id="{{list[8]}}"
+                                            data-sn="{{list[7]}}">
+                                            DELETE
+                                        </button>
                                         <button
                                             type="button"
                                             class="btn-edit triggermut-btn"
@@ -125,13 +131,18 @@
                                     <input type="text" value="{{type[0].upper()}}" style="width: 100px; text-align: center;" >
                                 </td>               
                                 <td>
-                                    <form action="/data/delete_row_data" method="POST" style="display:flex;align-items:center;gap:6px;width:90%;">
+                                    <form style="display:flex;align-items:center;gap:6px;width:90%;">
                                         <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly style="padding-right: 1%; width: 600px;">
                                         <input type="hidden" name="sn" value="{{list[1]}}">
                                         {% if list[1] not in pr_sn_list %}
                                             <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>      
                                         {% endif %}
-                                        <button type="submit" class="btn-delete">DEL</button>
+                                        <button 
+                                            type="button" 
+                                            class="btn-delete triggerdatdel-btn"
+                                            data-sn = {{list[1]}}>
+                                            DELETE
+                                        </button>
                                         <button 
                                             type="button"
                                             class="btn-edit triggerdat-btn"
@@ -230,6 +241,23 @@
             {% endif %}
         </div>
 
+
+
+        <!-- ── NON-SN TAB ── -->
+        <div id="pr" class="tabcontent" style="display: none;">
+            {% if pr %} 
+            <h2>List Barang Pending Belum PR</h2>
+            <input class="search-bar" type="text" id="filterInputnon-sn" onkeyup="filterTable('filterInputnon-sn','non-snTable')" placeholder="Cari tipe, SN, toko...">
+            <table id="non-snTable">
+            <tbody>
+                <h1>place HOLDER</h1>
+            </tbody>
+            </table>
+            {% else %}
+                <h3>NO DATA</h3>
+            {% endif %}
+        </div>
+
     </div><!-- /main -->
 
 
@@ -319,6 +347,47 @@
         </div>
     </dialog>
 
+    <!-- ── DELETE DATA DIALOG ── -->
+    <dialog id="datdelPopup">
+        <div class="dialog-header">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            Delete Data
+        </div>
+        <div class="dialog-body">
+            <h2>ARE YOU SURE?</h2>
+            <p>you are about to delete</p>
+            <form action="/data/delete_row_data" method="POST" id="formDatDel">
+                <input name="sn" id="triggerdatdel-sn" readonly>
+            </form>
+
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn-close-dialog" id="closeDatDelPopupBtn">cancel</button>
+            <button type="submit" form="formDatDel" class="btn-submit-dialog">Delete</button>
+        </div>
+    </dialog>
+
+    <!-- ── DELETE MUTASI DIALOG ── -->
+    <dialog id="mutdelPopup">
+        <div class="dialog-header">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            Delete Mutasi
+        </div>
+        <div class="dialog-body">
+            <h2>ARE YOU SURE?</h2>
+            <p>you are about to delete</p>
+            <form action="/data/delete_row_mut" method="POST" id="formMutDel">
+                <input name="id" id="triggermutdel-id" readonly>
+                <input name="sn" id="triggermutdel-sn" readonly>
+            </form>
+
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn-close-dialog" id="closeMutDelPopupBtn">cancel</button>
+            <button type="submit" form="formMutDel" class="btn-submit-dialog">Delete</button>
+        </div>
+    </dialog>
+
 
     <script>
         // switch tab to latest open
@@ -381,6 +450,27 @@
             });
         });
         document.getElementById('closeDatPopupBtn').addEventListener('click', () => popupdat.close());
+
+        /* -- Asset Delete popup -- */
+        const delpopupdat = document.getElementById('datdelPopup');
+        document.querySelectorAll('.triggerdatdel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('triggerdatdel-sn').value    = btn.dataset.sn;
+                delpopupdat.showModal();
+            });
+        });
+        document.getElementById('closeDatDelPopupBtn').addEventListener('click', () => delpopupdat.close());
+
+        /* -- Mutasi Delete popup -- */
+        const delpopupmut = document.getElementById('mutdelPopup');
+        document.querySelectorAll('.triggermutdel-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('triggermutdel-id').value    = btn.dataset.id;
+                document.getElementById('triggermutdel-sn').value    = btn.dataset.sn;
+                delpopupmut.showModal();
+            });
+        });
+        document.getElementById('closeMutDelPopupBtn').addEventListener('click', () => delpopupmut.close());
     </script>
 
 </body>

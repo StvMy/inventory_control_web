@@ -4,6 +4,7 @@ import psycopg2
 from psycopg2 import pool
 import os
 
+
 DB_PARAMS = {
     "minconn":1,
     "maxconn":10,
@@ -23,6 +24,9 @@ def get_db_connection():
     """ Establish connection and return database connection"""
     return pool.ThreadedConnectionPool(**DB_PARAMS) # ** -> unpack dictionary
 
+@views.route('/')
+def reroute():
+    return redirect(url_for("views.home"))
         
 @views.route('/home')
 def home():

@@ -3,6 +3,14 @@ import psycopg2
 from psycopg2 import pool
 import os
 from datetime import datetime, timezone, timedelta
+from timeit import default_timer as timer
+
+def print_train_time(start:float, end:float, customInfo:str):
+  "Prints difference between start and end time."
+
+  total_time = end - start
+  print(f"Difference: {total_time:.3f} seconds {customInfo}")
+  return total_time
 
 DB_PARAMS = {
     "minconn":1,
@@ -35,33 +43,59 @@ def table_data():
     if tab is None:
         tab = "data"
     
+    start = timer()
     cur.execute("SELECT * FROM type_list")
     types = cur.fetchall()
-    print("fetch")
+    end = timer()
+    print_train_time(start=start,end=end,customInfo="type list")
     
+    
+    start = timer()
     cur.execute("SELECT * FROM mutasi ORDER BY date DESC")
     mutasi = cur.fetchall()
     print("fetch")
+    end = timer()
+    print_train_time(start=start,end=end,customInfo="mutasi")
     
+    
+    start = timer()
     cur.execute("SELECT * FROM asset_data")
     all_asset = cur.fetchall()
     print("fetch")
+    end = timer()
+    print_train_time(start=start,end=end,customInfo="data asset")
+
     
+    start = timer()
     cur.execute("SELECT * FROM pr ORDER BY status ASC")
     pr_list = cur.fetchall()
     print("fetch")
+    end = timer()
+    print_train_time(start=start,end=end,customInfo="pr list")
+ 
     
+    start = timer()
     cur.execute("SELECT * FROM service_history ORDER BY date DESC")
     services = cur.fetchall()
     print("fetch")
+    end = timer()
+    print_train_time(start=start,end=end,customInfo="services")
     
+    
+    start = timer()
     pr_sn = [sn[1] for sn in pr_list]
-    print(pr_sn)
-    
+    print("fetch")
+    end = timer()
+    print_train_time(start=start,end=end,customInfo="sn pr")    
 
+
+    start = timer()
     cur.close()
     poolcon.putconn(conn)
     print("close connection")
+    end = timer()
+    print_train_time(start=start,end=end,customInfo="closing connection")       
+    
     
     print(tab)
     return render_template("table.html",pr_sn_list=pr_sn, item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list, tab=tab)
@@ -137,7 +171,7 @@ def del_row_data():
         conn = poolcon.getconn()
         cur = conn.cursor()
         try:   
-            sn = request.form.get("sn")
+            sn = str(request.form.get("sn"))
             
             #  1.Fetch data to display on the page
             cur.execute(
@@ -145,6 +179,7 @@ def del_row_data():
                 (sn.upper(),)
             )
             conn.commit()
+            print(f"DELETE DATA {sn}")
         except psycopg2.Error as e:
             print(e)
 
