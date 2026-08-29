@@ -3,14 +3,14 @@ import psycopg2
 from psycopg2 import pool
 import os
 from datetime import datetime, timezone, timedelta
-from timeit import default_timer as timer
+# from timeit import default_timer as timer
 
-def print_train_time(start:float, end:float, customInfo:str):
-    "Prints difference between start and end time."
+# def print_train_time(start:float, end:float, customInfo:str):
+#     "Prints difference between start and end time."
 
-    total_time = end - start
-    print(f"Difference: {total_time:.3f} seconds {customInfo}")
-    return total_time
+#     total_time = end - start
+#     print(f"Difference: {total_time:.3f} seconds {customInfo}")
+#     return total_time
 
 DB_PARAMS = {
     "minconn":1,
@@ -43,58 +43,58 @@ def table_data():
     if tab is None:
         tab = "data"
     
-    start = timer()
+    # start = timer()
     cur.execute("SELECT * FROM type_list")
     types = cur.fetchall()
-    end = timer()
-    print_train_time(start=start,end=end,customInfo="type list")
+    # end = timer()
+    # print_train_time(start=start,end=end,customInfo="type list")
     
     
-    start = timer()
+    # start = timer()
     cur.execute("SELECT * FROM mutasi ORDER BY date DESC")
     mutasi = cur.fetchall()
     print("fetch")
-    end = timer()
-    print_train_time(start=start,end=end,customInfo="mutasi")
+    # end = timer()
+    # print_train_time(start=start,end=end,customInfo="mutasi")
     
     
-    start = timer()
-    cur.execute("SELECT * FROM asset_data")
+    # start = timer()
+    cur.execute("SELECT * FROM asset_data ORDER BY type ASC")
     all_asset = cur.fetchall()
     print("fetch")
-    end = timer()
-    print_train_time(start=start,end=end,customInfo="data asset")
+    # end = timer()
+    # print_train_time(start=start,end=end,customInfo="data asset")
 
     
-    start = timer()
+    # start = timer()
     cur.execute("SELECT * FROM pr ORDER BY status ASC")
     pr_list = cur.fetchall()
     print("fetch")
-    end = timer()
-    print_train_time(start=start,end=end,customInfo="pr list")
+    # end = timer()
+    # print_train_time(start=start,end=end,customInfo="pr list")
  
     
-    start = timer()
+    # start = timer()
     cur.execute("SELECT * FROM service_history ORDER BY date DESC")
     services = cur.fetchall()
     print("fetch")
-    end = timer()
-    print_train_time(start=start,end=end,customInfo="services")
+    # end = timer()
+    # print_train_time(start=start,end=end,customInfo="services")
     
     
-    start = timer()
+    # start = timer()
     pr_sn = [sn[1] for sn in pr_list]
     print("fetch")
-    end = timer()
-    print_train_time(start=start,end=end,customInfo="sn pr")    
+    # end = timer()
+    # print_train_time(start=start,end=end,customInfo="sn pr")    
 
 
-    start = timer()
+    # start = timer()
     cur.close()
     poolcon.putconn(conn)
     print("close connection")
-    end = timer()
-    print_train_time(start=start,end=end,customInfo="closing connection")       
+    # end = timer()
+    # print_train_time(start=start,end=end,customInfo="closing connection")       
     
     
     print(tab)
@@ -292,4 +292,25 @@ def add_to_PR():
             print(e)
             
         poolcon.putconn(conn)
+        return redirect(url_for("tables.table_data", tab="data"))
+    
+@tables.route("/lock",methods=["POST"])
+def lock_data():
+    if request.method == "POST":
+        sn = request.form.get("sn")
+        try:
+            poolcon = get_db_connection()
+            conn = poolcon.getconn()
+            cur = conn.cursor() 
+            
+            cur.execute(
+                "UPDATE asset_data SET lock_status = NOT lock_status WHERE serial_number = %s;",
+                (sn,)
+            )
+            conn.commit()
+            print(f"sn = {sn}")
+        except psycopg2.Error as e:
+            print(e)
+            
+        poolcon.putconn(conn)    
         return redirect(url_for("tables.table_data", tab="data"))

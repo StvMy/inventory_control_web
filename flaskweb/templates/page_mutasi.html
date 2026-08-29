@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
         rel="stylesheet"
         crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../static/homeStyle.css">
 </head>
 <body>
@@ -156,13 +158,13 @@
                                     </select>
                                     <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
                                 </div>
-                                <div>
+                                <div class="field">
                                     <label for="numberIn">Pilih Jumlah</label>
                                     <div class="qtyin_nonsn" id="qtyin_nonsn">
-                                        <button type="button" class="qc-btn minus" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
+                                        <button type="button" class="qc-btn minus" id="qty-minus-outnonsn" aria-label="Decrease quantity">&minus;</button>
                                         <input
                                             type="number"
-                                            id="qty-input"
+                                            id="qty-input-outnonsn"
                                             name="quantity"
                                             class="qc-input"
                                             value="1"
@@ -206,7 +208,7 @@
                 <!-- SN -->
                 <div id="SN-OUT" class="tabcontent-inner" style="display: block;">
                     <div class="grid-container">
-                        <form action="" method="POST">
+                        <form action="/out_item" method="POST">
                             <!-- <div class="radio-container">
                                 <div>
                                     TO BE A REPORT FOR ITEM OUT
@@ -253,16 +255,16 @@
                 <!-- NON SN -->
                 <div id="NON-SN-OUT" class="tabcontent-inner" style="display: none;">
                     <div class="grid-container">
-                        <form action="" method="POST">
+                        <form action="/out_item_nonsn" method="POST">
                             <!-- <div class="radio-container">
                                 <div>
                                    <h1>PLACE HOLDER</h1>
                                 </div>
-                            </div>-->
+                            </div> -->
                             <div class="field">
                                 <div class="field" style="padding-bottom: 10px;">
-                                    <label for="usernamein">Nama</label>
-                                    <input type="text" id="usernamein" name="usernamein" required>
+                                    <label for="usernameout_nonsn">Nama</label>
+                                    <input type="text" id="usernameout_nonsn" name="usernameout_nonsn" required>
                                 </div>
                                 <div class="field">
                                     <label for="item">Tipe Barang</label>
@@ -275,9 +277,9 @@
                                     </select>
                                     <button type="button" class="rmvbutton" id="rmvBtn" onclick="removebtn()" formnovalidate>- REMOVE TYPE</button>
                                 </div>
-                                <div class="field">
-                                    <label for="numberIn">Pilih Jumlah</label>
-                                    <div class="qty-chooser" id="qty-chooser">
+                                <div>
+                                    <label for="numberOut">Pilih Jumlah</label>
+                                    <div class="qtyout_nonsn" id="qtyout_nonsn">
                                         <button type="button" class="qc-btn minus" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
                                         <input
                                             type="number"
@@ -297,18 +299,16 @@
                                 </div>
                                 <div class="field">
                                     <label for="destination">Tujuan</label>
-                                    <input type="text" id="usernamein" name="usernamein" required>
+                                    <input type="text" id="storeout_nonsn" name="storeout_nonsn" required>
                                 </div>
                                 <div class="field-full" style="padding-top: 10px;">
                                     <label for="commentin">Info:</label>
-                                    <textarea id="commentin" name="commentin" rows="4" placeholder="Keterangan penggunaan (penggantian/penambahan/perbaikan)..." ></textarea>
+                                    <textarea id="commentout_nonsn" name="commentout_nonsn" rows="4" placeholder="Keterangan penggunaan (penggantian/penambahan/perbaikan)..." ></textarea>
                                 </div>
                                 <div class="submit-wrap">
-                                    <input type="submit" value="SUBMIT BARANG MASUK">
+                                    <input type="submit" value="SUBMIT BARANG KELUAR">
                                 </div>
                             </div>
-
-
                         </form>
                     </div>
                 </div>
@@ -385,8 +385,8 @@
                         <!-- Map Flask categories to Bootstrap alert types (e.g., error -> danger) -->
                         {% set alert_type = 'danger' if category == 'error' else category %}
                         
-                        <div class="alert alert-{{ alert_type }} alert-dismissible fade show" role="alert">
-                            {{category, message }}
+                        <div class="alert alert-{{ alert_type }} alert-dismissible fade show flash-message" role="alert">
+                            <h3>{{category}},  {{message}}</h3>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endfor %}
@@ -396,16 +396,17 @@
     </div>
 
     <script>
-        // if ('{{tab}}'){
-        //     document.querySelectorAll('.tabcontent-outer').forEach(el => el.style.display = 'none');
-        //     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        //     document.getElementById('{{tab}}').style.display = 'block';
+        if ('{{tab}}'){
+            document.querySelectorAll('.tabcontent-outer').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('{{tab}}').style.display = 'block';
+        }
 
-        //     document.querySelectorAll('.tabcontent-inner').forEach(el => el.style.display = 'none');
-        //     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        //     document.getElementById('{{tab}}').style.display = 'block';
-        // }
-
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(alert => {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            });
+        }, 3000);
 
         
         function removebtn(){
@@ -453,7 +454,7 @@
 
 
         (function(){
-            const MIN = 0;
+            const MIN = 1;
             const MAX = 9999;
             const STEP = 1;
         

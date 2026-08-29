@@ -18,7 +18,7 @@ DB_PARAMS = {
 views = Blueprint('views',__name__)
 
 
-print(DB_PARAMS)
+
 
 def get_db_connection():
     """ Establish connection and return database connection"""
@@ -202,6 +202,11 @@ def submission_type():
             type_add =request.form.get("add_type_nonsn")
             table = "type_list_nonsn"
             tab_inner = "NON-SN-IN"
+            
+            cur.execute(
+                "INSERT INTO asset_data_nonsn (types,qty) VALUES(%s,%s);",
+                (type_add,0,)
+            )
             print("TO NON SN")
             
         if type_add:
@@ -286,27 +291,33 @@ def submission_out():
         try:
 
             cur.execute(
-                "SELECT type,store FROM asset_data WHERE serial_number = %s ;",
+                "SELECT type,store,lock_status FROM asset_data WHERE serial_number = %s ;",
                 (serial.upper(),)
             )
             data = cur.fetchall() 
             if data:
-                print(f"data: ----------{data[0][0]}-----------")
-                cur.execute(
-                    "INSERT INTO mutasi (date,serial, initial, destination, info, name, item, item_store_name) VALUES(%s,%s,%s,%s,%s,%s,%s,%s);",
-                    (date.strftime("%Y-%m-%d %H:%M:%S"),serial.upper(),"IT",store.upper(),info.upper(),username.upper(),data[0][0].upper(), data[0][1].upper(),)
-                )
-                # Commit changes
-                conn.commit()
-                
-                cur.execute( 
-                    "DELETE FROM asset_data WHERE serial_number = %s ;",
-                    (serial.upper(),)
-                )
-                conn.commit()
-                cur.close()
-                conn.close()
-                return(redirect(url_for("views.home",tab="OUT")))
+                print(f"data 0 : ----------{data[0][0]}-----------")
+                print(f"data 1 : ----------{data[0][1]}-----------")
+                print(f"data 2 : ----------{data[0][2]}-----------")
+                if (str(data[0][2]).upper() == "FALSE"):
+                    cur.execute(
+                        "INSERT INTO mutasi (date,serial, initial, destination, info, name, item, item_store_name) VALUES(%s,%s,%s,%s,%s,%s,%s,%s);",
+                        (date.strftime("%Y-%m-%d %H:%M:%S"),serial.upper(),"IT",store.upper(),info.upper(),username.upper(),data[0][0].upper(), data[0][1].upper(),)
+                    )
+                    # Commit changes
+                    conn.commit()
+                    
+                    cur.execute( 
+                        "DELETE FROM asset_data WHERE serial_number = %s ;",
+                        (serial.upper(),)
+                    )
+                    conn.commit()
+                    cur.close()
+                    conn.close()
+                    return(redirect(url_for("views.home",tab="OUT")))
+                else:
+                    flash("Item Terkunci","error")
+                    return(redirect(url_for("views.home",tab="OUT")))
             else:
                 cur.close()
                 conn.close()
@@ -319,8 +330,35 @@ def submission_out():
         poolcon.putconn(conn)
         return(redirect(url_for("views.home",tab="OUT")))
 
-  
-    
+@views.route('/out_item_nonsn', methods=["POST"])
+def submission_outnonsn():
+    poolcon = get_db_connection()
+    conn = poolcon.getconn()
+    cur = conn.cursor()
+    if request.method == "POST":
+        types = request.form.get("item")
+        qty = request.form.get("qtyout_nonsn")
+        username = request.form.get("usernameout_nonsn")
+        info = request.form.get("commentout_nonsn")
+        store = request.form.get("storeout_nonsn")
+        date = datetime.now(timezone(timedelta(hours=8)))
+        cur.execute(
+            "SELECT qty FROM asset_data_nonsn WHERE types = %s;",
+            (types,)
+        )
+        data_qty = cur.fetchall()
+        
+        print(f"data qty = {data_qty}")
+        if (int(data_qty[0][0])<int(qty)):
+            flash("Jumlah yang dikeluarkan lebih besar dari yang tersedia","error")
+        else:
+            cur.execute(
+                "INSERT INTO mutasi (date,serial, initial, destination, info, name, item, item_store_name) VALUES(%s,%s,%s,%s,%s,%s,%s,%s);",
+                (date.strftime("%Y-%m-%d %H:%M:%S"),"non-SN","IT",store.upper(),(info.upper()+qty),username.upper(),types.upper(), "Backup",)
+            )
+        print(f"{types}, {qty}, {username}, {info}")
+        return(redirect(url_for("views.home",tab="OUT")))
+           
 @views.route('/service', methods=["POST"])
 def submission_service():    
     """ CONNECT TO DATABASE """

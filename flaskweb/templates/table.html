@@ -7,7 +7,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../static/tableStyle.css">
-
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
     <!-- <script src="https://jsdelivr.net"></script> -->
@@ -71,7 +71,7 @@
                     {% for list in data_mutasi %}
                         <tr class="{% if list[1]|lower == 'it' %}row-in{% else %}row-out{% endif %}" >
                             <form >
-                                <td ><input type="text" name="row" value="{{loop.index0+1}}"></td>
+                                <td style="padding-left: 10px;"><input type="text" name="row" value="{{loop.index0+1}}"></td>
                                 <td><input type="text" name="date" value="{{list[6]}}" readonly></td>
                                 <td><input type="text" name="name" value="{{list[3]}}" readonly></td>
                                 <td><input type="text" name="tokotertulis" value="{{list[5]}}" readonly></td>
@@ -137,6 +137,12 @@
                                         {% if list[1] not in pr_sn_list %}
                                             <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>      
                                         {% endif %}
+                                        {% if list[4] == false %}  
+                                            <button type="submit" class="btn-lock" formaction="/data/lock" formmethod="POST">LOCK</button> 
+                                        {% else %}
+                                            <i class="material-icons">lock</i>
+                                            <button type="submit" class="btn-unlock" formaction="/data/lock" formmethod="POST">UNLOCK</button>
+                                        {% endif %}
                                         <button 
                                             type="button" 
                                             class="btn-delete triggerdatdel-btn"
@@ -151,7 +157,8 @@
                                             data-info="{{list[2]}}"
                                             data-store="{{list[3]}}">
                                             EDIT
-                                        </button>  
+                                        </button>
+
                                     </form>
                                 </td>
                             </tr>
