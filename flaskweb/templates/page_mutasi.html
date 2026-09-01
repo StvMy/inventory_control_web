@@ -161,10 +161,10 @@
                                 <div class="field">
                                     <label for="numberIn">Pilih Jumlah</label>
                                     <div class="qtyin_nonsn" id="qtyin_nonsn">
-                                        <button type="button" class="qc-btn minus" id="qty-minus-outnonsn" aria-label="Decrease quantity">&minus;</button>
+                                        <button type="button" class="qc-btn minus" id="qty-minus-innonsn" aria-label="Decrease quantity">&minus;</button>
                                         <input
                                             type="number"
-                                            id="qty-input-outnonsn"
+                                            id="qty-input-innonsn"
                                             name="quantity"
                                             class="qc-input"
                                             value="1"
@@ -174,9 +174,9 @@
                                             inputmode="numeric"
                                             aria-describedby="qty-error"
                                         />
-                                        <button type="button" class="qc-btn plus" id="qty-plus" aria-label="Increase quantity">&plus;</button>
+                                        <button type="button" class="qc-btn plus" id="qty-plus-innonsn" aria-label="Increase quantity">&plus;</button>
                                     </div>
-                                    <p class="qc-error" id="qty-error" role="alert"></p>
+                                    <p class="qc-error" id="qty-error-innnonsn" role="alert"></p>
                                 </div>
                                 <div class="field-full" style="padding-top: 10px;">
                                     <label for="commentin_nonsn">Info:</label>
@@ -280,10 +280,10 @@
                                 <div>
                                     <label for="numberOut">Pilih Jumlah</label>
                                     <div class="qtyout_nonsn" id="qtyout_nonsn">
-                                        <button type="button" class="qc-btn minus" id="qty-minus" aria-label="Decrease quantity">&minus;</button>
+                                        <button type="button" class="qc-btn minus" id="qty-minus-outnonsn" aria-label="Decrease quantity">&minus;</button>
                                         <input
                                             type="number"
-                                            id="qty-input"
+                                            id="qty-input-outnonsn"
                                             name="quantity"
                                             class="qc-input"
                                             value="1"
@@ -293,7 +293,7 @@
                                             inputmode="numeric"
                                             aria-describedby="qty-error"
                                         />
-                                        <button type="button" class="qc-btn plus" id="qty-plus" aria-label="Increase quantity">&plus;</button>
+                                        <button type="button" class="qc-btn plus" id="qty-plus-outnonsn" aria-label="Increase quantity">&plus;</button>
                                     </div>
                                     <p class="qc-error" id="qty-error" role="alert"></p>
                                 </div>
@@ -410,7 +410,12 @@
 
         
         function removebtn(){
-            const type = document.getElementById("item").value;
+            var type = document.getElementById("item").value;
+            console.log(type)
+            if (type == ""){
+                type = document.getElementById("item_nonsn").value;
+                console.log(type)
+            }
             fetch("/remove_type", {
                 method: "POST",
                 headers: {
@@ -452,17 +457,100 @@
             }
         }
 
+        (function(){
+            const MIN = 1;
+            const MAX = 9999;
+            const STEP = 1;
+        
+            const wrap    = document.getElementById('qtyout_nonsn');
+            const input   = document.getElementById('qty-input-outnonsn');
+            const minusBtn= document.getElementById('qty-minus-outnonsn');
+            const plusBtn = document.getElementById('qty-plus-outnonsn');
+            const errorEl = document.getElementById('qty-error-outnnonsn');
+        
+            function clamp(n){
+            if (isNaN(n)) return MIN;
+            return Math.min(MAX, Math.max(MIN, n));
+            }
+        
+            function playPulse(){
+            input.classList.remove('qc-pulse');
+            // force reflow so the animation can restart
+            void input.offsetWidth;
+            input.classList.add('qc-pulse');
+            }
+        
+            function playShake(){
+            wrap.classList.remove('qc-shake');
+            void wrap.offsetWidth;
+            wrap.classList.add('qc-shake');
+            }
+        
+            function updateButtonState(n){
+            minusBtn.disabled = n <= MIN;
+            plusBtn.disabled  = n >= MAX;
+            }
+        
+            function setValue(n){
+            const attempted = n;
+            const clamped = clamp(n);
+            input.value = clamped;
+            updateButtonState(clamped);
+            errorEl.textContent = '';
+        
+            if (attempted !== clamped) {
+                playShake();
+            } else {
+                playPulse();
+            }
+            }
+        
+            minusBtn.addEventListener('click', () => {
+            setValue((parseInt(input.value, 10) || 0) - STEP);
+            });
+        
+            plusBtn.addEventListener('click', () => {
+            setValue((parseInt(input.value, 10) || 0) + STEP);
+            });
+        
+            input.addEventListener('input', () => {
+            const raw = input.value;
+            if (raw === '') { errorEl.textContent = ''; return; }
+            const n = Number(raw);
+            if (isNaN(n) || !Number.isInteger(n)) {
+                errorEl.textContent = 'Enter a whole number.';
+            } else if (n < MIN || n > MAX) {
+                errorEl.textContent = `Must be between ${MIN} and ${MAX}.`;
+            } else {
+                errorEl.textContent = '';
+            }
+            });
+        
+            input.addEventListener('blur', () => {
+            setValue(parseInt(input.value, 10));
+            });
+        
+            input.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp')   { e.preventDefault(); plusBtn.click(); }
+            if (e.key === 'ArrowDown') { e.preventDefault(); minusBtn.click(); }
+            });
+        
+            // init disabled state on load, no animation
+            updateButtonState(clamp(parseInt(input.value, 10)));
+        })();
+
+
 
         (function(){
             const MIN = 1;
             const MAX = 9999;
             const STEP = 1;
         
-            const wrap    = document.getElementById('qty-chooser');
-            const input   = document.getElementById('qty-input');
-            const minusBtn= document.getElementById('qty-minus');
-            const plusBtn = document.getElementById('qty-plus');
-            const errorEl = document.getElementById('qty-error');
+            const wrap    = document.getElementById('qtyin_nonsn');
+            const input   = document.getElementById('qty-input-innonsn');
+            const minusBtn= document.getElementById('qty-minus-innonsn');
+            const plusBtn = document.getElementById('qty-plus-innonsn');
+            const errorEl = document.getElementById('qty-error-innnonsn');
         
             function clamp(n){
             if (isNaN(n)) return MIN;

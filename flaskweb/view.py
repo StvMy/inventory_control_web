@@ -163,7 +163,7 @@ def submission_nonsn():
                 conn.commit()
             else:
                 cur.execute(
-                    "INSERT INTO asset_data_nonsn (types,qty) VALUES (%s,%s);",
+                    "INSERT INTO asset_data_nonsn (type,qty) VALUES (%s,%s);",
                     (types.upper(),qty,)
                 )
                 conn.commit()
@@ -204,14 +204,14 @@ def submission_type():
             tab_inner = "NON-SN-IN"
             
             cur.execute(
-                "INSERT INTO asset_data_nonsn (types,qty) VALUES(%s,%s);",
+                "INSERT INTO asset_data_nonsn (type,qty) VALUES(%s,%s);",
                 (type_add,0,)
             )
             print("TO NON SN")
             
         if type_add:
             try:
-                query = f"SELECT * FROM {table} WHERE types = %s"
+                query = f"SELECT * FROM {table} WHERE types = %s;"
                 print(query)
                 cur.execute(
                     query,
@@ -220,7 +220,7 @@ def submission_type():
                 if(cur.fetchall()):
                     flash("Nomor Serial sudah terdaftar","error")
                 else: 
-                    query = f"INSERT INTO {table} VALUES(%s)"         
+                    query = f"INSERT INTO {table} VALUES(%s);"         
                     cur.execute(
                         query,
                         (type_add.upper(),)
@@ -228,7 +228,7 @@ def submission_type():
                     
                     # 3. Commit changes and close connections
                     conn.commit()
-        
+                
             except psycopg2.Error as e:
                 print(e)
                 conn.rollback()  # important: clear failed transaction
@@ -255,16 +255,31 @@ def submission_remove_type():
                 (type_remove.upper(),)
             )
             if(cur.fetchall()):
+                table = "type_list"
+                data = "asset_data"
+            else:
+                table = "type_list_nonsn"
+                data = "asset_data_nonsn"
+                
+            query = f"SELECT type FROM {data} WHERE type = %s"
+            cur.execute(
+                query,
+                (type_remove,)
+            )
+            if (len(cur.fetchall())>=1):            
+                flash("ITEM MASIH ADA DI INVENTORY", "error")
+            else:
+                
+                query = f"DELETE FROM {table} WHERE types = %s;"   # NEED FIX it does not work because JS
                 cur.execute(
-                    "DELETE FROM type_list WHERE types = %s ",
+                    query,
                     (type_remove.upper(),)
                 )
-                
                 # 3. Commit changes and close connections
                 conn.commit()
+                
                 print("OK")
-            else:
-                flash("Nomor Serial tidak terdaftar","error")
+                print(f"delete {type_remove} in {table}")
         except psycopg2.Error as e:
             print(e)
             conn.rollback()  # important: clear failed transaction
