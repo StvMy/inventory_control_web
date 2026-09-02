@@ -314,3 +314,8 @@ def lock_data():
             
         poolcon.putconn(conn)    
         return redirect(url_for("tables.table_data", tab="data"))
+
+# @tables.route("/mutasi_data",methods=["POST"])
+# def mutasi_barang():
+#     if request.method == "POST":
+         
