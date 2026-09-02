@@ -71,15 +71,15 @@
                     {% for list in data_mutasi %}
                         <tr class="{% if list[1]|lower == 'it' %}row-in{% else %}row-out{% endif %}" >
                             <form >
-                                <td style="padding-left: 10px;">{{loop.index0+1}}</td>
-                                <td>{{list[6]}}</td>
-                                <td>{{list[3]}}</td>
-                                <td>{{list[5]}}</td>
-                                <td>{{list[4]}}</td>
-                                <td style="background-color: aquamarine;">{{list[7]}}</td>
-                                <td style="background-color: yellow;">{{list[0]}}</td>
-                                <td style="background-color: skyblue;">{{list[1]}}</td>
-                                <td>{{list[2]}}</td>
+                                <td style="padding-left: 10px;"><input type="text" name="row" value="{{loop.index0+1}}"></td>
+                                <td><input type="text" name="date" value="{{list[6]}}" readonly></td>
+                                <td><input type="text" name="name" value="{{list[3]}}" readonly></td>
+                                <td><input type="text" name="tokotertulis" value="{{list[5]}}" readonly></td>
+                                <td><input type="text" name="jenisbarang" value="{{list[4]}}" readonly></td>
+                                <td style="background-color: aquamarine;"><input type="text" name="sn" value="{{list[7]}}" style="text-overflow: ellipsis;" readonly></td>
+                                <td style="background-color: yellow;"><input type="text" name="lokasiawal" value="{{list[0]}}" readonly></td>
+                                <td style="background-color: skyblue;"><input type="text" name="lokasitujuan" value="{{list[1]}}" readonly></td>
+                                <td><input type="text" name="info" value="{{list[2]}}" readonly></td>
                                 <input type="hidden" name="id" value="{{list[8]}}">
                                 <td>
                                     <div class="action-cell">
