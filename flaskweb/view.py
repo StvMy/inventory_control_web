@@ -119,8 +119,8 @@ def submission():
                     conn.commit()
                 # 3. Execute SQL
                 cur.execute(
-                    "INSERT INTO asset_data (Type,Serial_Number,store, Information) VALUES(%s,%s,%s,%s);",
-                    (type_item.upper(),serial.upper(),store.upper(),info.upper(),)
+                    "INSERT INTO asset_data (Type,Serial_Number,store, Information, lock_status) VALUES(%s,%s,%s,%s,%s);",
+                    (type_item.upper(),serial.upper(),store.upper(),info.upper(),False,)
                 )
                 conn.commit()
                 cur.execute(
