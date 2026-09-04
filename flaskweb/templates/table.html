@@ -132,21 +132,23 @@
                                 </td>               
                                 <td>
                                     <form style="display:flex;align-items:center;gap:6px;width:90%;">
-                                        <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly style="padding-right: 1%; width: 600px;">
+                                        <span style="flex:1;">{{list[1]}} | {{list[3]}} | {{list[2]}}</span>
                                         <input type="hidden" name="sn" value="{{list[1]}}">
-                                        {% if list[1] not in pr_sn_list %}
-                                            <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>      
-                                        {% endif %}
                                         {% if list[4] == false %}  
                                             <button type="submit" class="btn-lock" formaction="/data/lock" formmethod="POST">LOCK</button> 
                                         {% else %}
                                             <i class="material-icons">lock</i>
                                             <button type="submit" class="btn-unlock" formaction="/data/lock" formmethod="POST">UNLOCK</button>
                                         {% endif %}
+                                        {% if list[1] not in pr_sn_list %}
+                                            <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>      
+                                        {% endif %}
                                         <button 
                                             type="button" 
                                             class="btn-delete triggerdatdel-btn"
-                                            data-sn = {{list[1]}}>
+                                            data-sn = {{list[1]}}
+                                            data-store = {{list[3]}}
+                                            data-item = {{list[0]}}>
                                             DELETE
                                         </button>
                                         <button 
@@ -364,7 +366,9 @@
             <h2>ARE YOU SURE?</h2>
             <p>you are about to delete</p>
             <form action="/data/delete_row_data" method="POST" id="formDatDel">
-                <input name="sn" id="triggerdatdel-sn" readonly>
+                <input name="item" id="triggerdatdel-item" readonly>
+                <input name="store" id="triggerdatdel-store" readonly>
+                <input name="sn" id="triggerdatdel-sn" readonly>         
             </form>
 
         </div>
@@ -463,6 +467,8 @@
         document.querySelectorAll('.triggerdatdel-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.getElementById('triggerdatdel-sn').value    = btn.dataset.sn;
+                document.getElementById('triggerdatdel-store').value    = btn.dataset.store;
+                document.getElementById('triggerdatdel-item').value    = btn.dataset.item;
                 delpopupdat.showModal();
             });
         });

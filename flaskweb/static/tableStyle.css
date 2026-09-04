@@ -242,7 +242,7 @@ td[style*="vertical-align: top"] {
 }
 
 /* ── Action buttons in table ── */
-.btn-delete, .btn-edit, .btn-pr {
+.btn-delete, .btn-edit, .btn-pr, .btn-lock, .btn-unlock {
     padding: 5px 12px;
     border: none;
     border-radius: 6px;
@@ -268,7 +268,12 @@ td[style*="vertical-align: top"] {
     color: #45490b;
 }
 .btn-pr:hover { background: #ffff57; transform: scale(1.04); }
-
+.btn-lock, .btn-unlock {
+    background: #cacaca;
+    color: #000000;
+}
+.btn-lock:hover { background: #747474; transform: scale(1.04); }
+.btn-unlock:hover { background: #9e9e9e; transform: scale(1.04); }
 .action-cell {
     display: flex;
     gap: 6px;
@@ -328,6 +333,7 @@ dialog {
 }
 #mutPopup { max-width: 560px; }
 #datPopup { max-width: 480px; }
+#datdelPopup, #mutdelPopup { width: auto; max-width: 400px; }
 dialog::backdrop {
     background-color: rgba(0,0,0,0.5);
 }
