@@ -42,6 +42,7 @@
         <!-- Tab buttons -->
         <div class="tab-menu">
             <button class="tab-btn" onclick="openTab(event, 'data')">DATA</button>
+            <button class="tab-btn" onclick="openTab(event, 'data_nonsn')">DATA NON-SN</button>
             <button class="tab-btn" onclick="openTab(event, 'mutasi')">MUTASI</button>
             <button class="tab-btn" onclick="openTab(event, 'service')">SERVICE</button>
             <button class="tab-btn" onclick="openTab(event, 'pr')">PR</button>
@@ -174,8 +175,28 @@
             {% endif %}
         </div>
 
-
-
+        <!-- ── DATA non-SN TAB ── -->
+        <div id="data_nonsn" class="tabcontent" style="display: none; max-height: 1000px; overflow-y: auto;">
+            {% if data_asset_nonsn %} 
+            <h2>Asset Data Non-SN</h2>
+            <input class="search-bar" type="text" id="filterInputDatNonsn" onkeyup="filterTable('filterInputDatNonsn','assetTableNon-sn')" placeholder="Cari tipe, SN, toko...">
+            <table id="assetTableNon-sn">
+            <tbody>
+                {% for data in data_asset_nonsn %}
+                    <tr>              
+                        <td>
+                            <form style="display:flex;align-items:center;gap:6px;width:90%;">
+                                <span style="flex:1;">{{data[0]}} @ {{data[1]}}</span>
+                            </form>
+                        </td>
+                    </tr>                  
+                {% endfor %}
+            </tbody>
+            </table>
+            {% else %}
+                <h3>NO DATA</h3>
+            {% endif %}
+        </div>
 
         <!-- ── SERVICE TAB ── -->
         <div id="service" class="tabcontent" style="display: none;">
@@ -418,16 +439,14 @@
         function filterTable(inputId, tableId) {
             const filter = document.getElementById(inputId).value.toLowerCase();
             // const rows = document.getElementById(tableId).querySelectorAll('input');
-            const rows = document.getElementById(tableId).querySelectorAll('tbody tr');
-            const buttons = document.getElementById(tableId).querySelectorAll('button');
-            rows.forEach(row => {
-                
-                const show = Array.from(row.querySelectorAll("input"))
-                                .map(input=>input.value)
-                                .join(" ")
-                                .toLowerCase();
-                row.style.display = show.includes(filter.toLowerCase()) ? '' : 'none';
-                
+            const rows = document.getElementById(tableId).querySelectorAll("tbody tr");
+            const buttons = document.getElementById(tableId).querySelectorAll("button");
+            rows.forEach((row) => {
+            const show = Array.from(row.querySelectorAll("td"))
+                .map((td) => td.getAttribute("value") || td.textContent)
+                .join(" ")
+                .toLowerCase();
+            row.style.display = show.includes(filter.toLowerCase()) ? "" : "none";
             });
         }
 

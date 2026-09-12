@@ -65,6 +65,12 @@ def table_data():
     # end = timer()
     # print_train_time(start=start,end=end,customInfo="data asset")
 
+    # start = timer()
+    cur.execute("SELECT * FROM asset_data_nonsn ORDER BY type ASC")
+    all_asset_nonsn = cur.fetchall()
+    print("fetch")
+    # end = timer()
+    # print_train_time(start=start,end=end,customInfo="data asset nonsn")
     
     # start = timer()
     cur.execute("SELECT * FROM pr ORDER BY status ASC")
@@ -98,7 +104,7 @@ def table_data():
     
     
     print(tab)
-    return render_template("table.html",pr_sn_list=pr_sn, item_types = types, data_asset=all_asset, data_mutasi=mutasi, service_history = services, pr=pr_list, tab=tab)
+    return render_template("table.html",pr_sn_list=pr_sn, item_types = types, data_asset=all_asset, data_asset_nonsn=all_asset_nonsn, data_mutasi=mutasi, service_history = services, pr=pr_list, tab=tab)
 
 
 

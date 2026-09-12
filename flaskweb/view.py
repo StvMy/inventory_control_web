@@ -147,21 +147,25 @@ def submission_nonsn():
         name = request.form.get("usernamein_nonsn")
         initial = request.form.get("initialin_nonsn")
         types = request.form.get("item_nonsn")
-        qty = request.form.get("qtyin_nonsn")
+        qty = request.form.get("qty-input-innonsn")
         info = request.form.get("commentin_nonsn")
         date = datetime.now(timezone(timedelta(hours=8)))
         try:
             cur.execute(
-                "SELECT types FROM asset_data_nonsn"
+                "SELECT type FROM asset_data_nonsn"
             )
             type_nonsn = cur.fetchall()
             if type_nonsn:
+                print(f"item present = {types}")
+                print(f"adding qty = {qty}")
                 cur.execute(
-                    "UPDATE asset_data_nonsn SET qty = qty + %s",
-                    (qty,)
+                    "UPDATE asset_data_nonsn SET qty = qty + %s WHERE type = %s;",
+                    (int(qty),types,)
                 )
                 conn.commit()
             else:
+                print("item not present")
+                print("adding item")
                 cur.execute(
                     "INSERT INTO asset_data_nonsn (type,qty) VALUES (%s,%s);",
                     (types.upper(),qty,)
@@ -205,7 +209,7 @@ def submission_type():
             
             cur.execute(
                 "INSERT INTO asset_data_nonsn (type,qty) VALUES(%s,%s);",
-                (type_add,0,)
+                (type_add.upper(),0,)
             )
             print("TO NON SN")
             
@@ -345,7 +349,7 @@ def submission_out():
         poolcon.putconn(conn)
         return(redirect(url_for("views.home",tab="OUT")))
 
-@views.route('/out_item_nonsn', methods=["POST"])
+@views.route('/out_item_nonsn', methods=["POST"])   # NOT COMPLETE (if value != stock value=-stock)
 def submission_outnonsn():
     poolcon = get_db_connection()
     conn = poolcon.getconn()
