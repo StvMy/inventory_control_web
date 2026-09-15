@@ -144,8 +144,8 @@
                                     <input type="text" id="usernamein_nonsn" name="usernamein_nonsn" required>
                                 </div>
                                 <div class="field" style="padding-bottom: 10px;">
-                                    <label for="initiialin_nonsn">lokasi sebelumnya</label>
-                                    <input type="text" id="initiialin_nonsn" name="initiialin_nonsn" required>
+                                    <label for="initialin_nonsn">lokasi sebelumnya</label>
+                                    <input type="text" id="initialin_nonsn" name="initialin_nonsn" required>
                                 </div>
                                 <div class="field">
                                     <label for="item_nonsn">Tipe Barang</label>
@@ -176,7 +176,7 @@
                                         />
                                         <button type="button" class="qc-btn plus" id="qty-plus-innonsn" aria-label="Increase quantity">&plus;</button>
                                     </div>
-                                    <p class="qc-error" id="qty-error-innnonsn" role="alert"></p>
+                                    <p class="qc-error" id="qty-error-innonsn" role="alert"></p>
                                 </div>
                                 <div class="field-full" style="padding-top: 10px;">
                                     <label for="commentin_nonsn">Info:</label>
@@ -284,7 +284,7 @@
                                         <input
                                             type="number"
                                             id="qty-input-outnonsn"
-                                            name="quantity"
+                                            name="qty-input-outnonsn"
                                             class="qc-input"
                                             value="1"
                                             min="0"
@@ -295,7 +295,7 @@
                                         />
                                         <button type="button" class="qc-btn plus" id="qty-plus-outnonsn" aria-label="Increase quantity">&plus;</button>
                                     </div>
-                                    <p class="qc-error" id="qty-error" role="alert"></p>
+                                    <p class="qc-error" id="qty-error-outnonsn" role="alert"></p>
                                 </div>
                                 <div class="field">
                                     <label for="destination">Tujuan</label>
@@ -462,11 +462,11 @@
             const MAX = 9999;
             const STEP = 1;
         
-            const wrap    = document.getElementById('qtyout_nonsn');
-            const input   = document.getElementById('qty-input-outnonsn');
-            const minusBtn= document.getElementById('qty-minus-outnonsn');
-            const plusBtn = document.getElementById('qty-plus-outnonsn');
-            const errorEl = document.getElementById('qty-error-outnnonsn');
+            const wrapout    = document.getElementById('qtyout_nonsn');
+            const inputout   = document.getElementById('qty-input-outnonsn');
+            const minusBtnout= document.getElementById('qty-minus-outnonsn');
+            const plusBtnout = document.getElementById('qty-plus-outnonsn');
+            const errorElout = document.getElementById('qty-error-outnnonsn');
         
             function clamp(n){
             if (isNaN(n)) return MIN;
@@ -474,29 +474,29 @@
             }
         
             function playPulse(){
-            input.classList.remove('qc-pulse');
+            inputout.classList.remove('qc-pulse');
             // force reflow so the animation can restart
-            void input.offsetWidth;
-            input.classList.add('qc-pulse');
+            void inputout.offsetWidth;
+            inputout.classList.add('qc-pulse');
             }
         
             function playShake(){
-            wrap.classList.remove('qc-shake');
-            void wrap.offsetWidth;
-            wrap.classList.add('qc-shake');
+            wrapout.classList.remove('qc-shake');
+            void wrapout.offsetWidth;
+            wrapout.classList.add('qc-shake');
             }
         
             function updateButtonState(n){
-            minusBtn.disabled = n <= MIN;
-            plusBtn.disabled  = n >= MAX;
+            minusBtnout.disabled = n <= MIN;
+            plusBtnout.disabled  = n >= MAX;
             }
         
             function setValue(n){
             const attempted = n;
             const clamped = clamp(n);
-            input.value = clamped;
+            inputout.value = clamped;
             updateButtonState(clamped);
-            errorEl.textContent = '';
+            errorElout.textContent = '';
         
             if (attempted !== clamped) {
                 playShake();
@@ -505,38 +505,38 @@
             }
             }
         
-            minusBtn.addEventListener('click', () => {
-            setValue((parseInt(input.value, 10) || 0) - STEP);
+            minusBtnout.addEventListener('click', () => {
+            setValue((parseInt(inputout.value, 10) || 0) - STEP);
             });
         
-            plusBtn.addEventListener('click', () => {
-            setValue((parseInt(input.value, 10) || 0) + STEP);
+            plusBtnout.addEventListener('click', () => {
+            setValue((parseInt(inputout.value, 10) || 0) + STEP);
             });
         
-            input.addEventListener('input', () => {
-            const raw = input.value;
-            if (raw === '') { errorEl.textContent = ''; return; }
+            inputout.addEventListener('input', () => {
+            const raw = inputout.value;
+            if (raw === '') { errorElout.textContent = ''; return; }
             const n = Number(raw);
             if (isNaN(n) || !Number.isInteger(n)) {
-                errorEl.textContent = 'Enter a whole number.';
+                errorElout.textContent = 'Enter a whole number.';
             } else if (n < MIN || n > MAX) {
-                errorEl.textContent = `Must be between ${MIN} and ${MAX}.`;
+                errorElout.textContent = `Must be between ${MIN} and ${MAX}.`;
             } else {
-                errorEl.textContent = '';
+                errorElout.textContent = '';
             }
             });
         
-            input.addEventListener('blur', () => {
-            setValue(parseInt(input.value, 10));
+            inputout.addEventListener('blur', () => {
+            setValue(parseInt(inputout.value, 10));
             });
         
-            input.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowUp')   { e.preventDefault(); plusBtn.click(); }
-            if (e.key === 'ArrowDown') { e.preventDefault(); minusBtn.click(); }
+            inputout.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp')   { e.preventDefault(); plusBtnout.click(); }
+            if (e.key === 'ArrowDown') { e.preventDefault(); minusBtnout.click(); }
             });
         
             // init disabled state on load, no animation
-            updateButtonState(clamp(parseInt(input.value, 10)));
+            updateButtonState(clamp(parseInt(inputout.value, 10)));
         })();
 
 
@@ -546,11 +546,11 @@
             const MAX = 9999;
             const STEP = 1;
         
-            const wrap    = document.getElementById('qtyin_nonsn');
-            const input   = document.getElementById('qty-input-innonsn');
-            const minusBtn= document.getElementById('qty-minus-innonsn');
-            const plusBtn = document.getElementById('qty-plus-innonsn');
-            const errorEl = document.getElementById('qty-error-innnonsn');
+            const wrapin    = document.getElementById('qtyin_nonsn');
+            const inputin   = document.getElementById('qty-input-innonsn');
+            const minusBtnin= document.getElementById('qty-minus-innonsn');
+            const plusBtnin = document.getElementById('qty-plus-innonsn');
+            const errorElin = document.getElementById('qty-error-innnonsn');
         
             function clamp(n){
             if (isNaN(n)) return MIN;
@@ -558,29 +558,29 @@
             }
         
             function playPulse(){
-            input.classList.remove('qc-pulse');
+            inputin.classList.remove('qc-pulse');
             // force reflow so the animation can restart
-            void input.offsetWidth;
-            input.classList.add('qc-pulse');
+            void inputin.offsetWidth;
+            inputin.classList.add('qc-pulse');
             }
         
             function playShake(){
-            wrap.classList.remove('qc-shake');
-            void wrap.offsetWidth;
-            wrap.classList.add('qc-shake');
+            wrapin.classList.remove('qc-shake');
+            void wrapin.offsetWidth;
+            wrapin.classList.add('qc-shake');
             }
         
             function updateButtonState(n){
-            minusBtn.disabled = n <= MIN;
-            plusBtn.disabled  = n >= MAX;
+            minusBtnin.disabled = n <= MIN;
+            plusBtnin.disabled  = n >= MAX;
             }
         
             function setValue(n){
             const attempted = n;
             const clamped = clamp(n);
-            input.value = clamped;
+            inputin.value = clamped;
             updateButtonState(clamped);
-            errorEl.textContent = '';
+            errorElin.textContent = '';
         
             if (attempted !== clamped) {
                 playShake();
@@ -589,38 +589,38 @@
             }
             }
         
-            minusBtn.addEventListener('click', () => {
-            setValue((parseInt(input.value, 10) || 0) - STEP);
+            minusBtnin.addEventListener('click', () => {
+            setValue((parseInt(inputin.value, 10) || 0) - STEP);
             });
         
-            plusBtn.addEventListener('click', () => {
-            setValue((parseInt(input.value, 10) || 0) + STEP);
+            plusBtnin.addEventListener('click', () => {
+            setValue((parseInt(inputin.value, 10) || 0) + STEP);
             });
         
-            input.addEventListener('input', () => {
-            const raw = input.value;
-            if (raw === '') { errorEl.textContent = ''; return; }
+            inputin.addEventListener('input', () => {
+            const raw = inputin.value;
+            if (raw === '') { errorElin.textContent = ''; return; }
             const n = Number(raw);
             if (isNaN(n) || !Number.isInteger(n)) {
-                errorEl.textContent = 'Enter a whole number.';
+                errorElin.textContent = 'Enter a whole number.';
             } else if (n < MIN || n > MAX) {
-                errorEl.textContent = `Must be between ${MIN} and ${MAX}.`;
+                errorElin.textContent = `Must be between ${MIN} and ${MAX}.`;
             } else {
-                errorEl.textContent = '';
+                errorElin.textContent = '';
             }
             });
         
-            input.addEventListener('blur', () => {
-            setValue(parseInt(input.value, 10));
+            inputin.addEventListener('blur', () => {
+            setValue(parseInt(inputin.value, 10));
             });
         
-            input.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowUp')   { e.preventDefault(); plusBtn.click(); }
-            if (e.key === 'ArrowDown') { e.preventDefault(); minusBtn.click(); }
+            inputin.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp')   { e.preventDefault(); plusBtnin.click(); }
+            if (e.key === 'ArrowDown') { e.preventDefault(); minusBtnin.click(); }
             });
         
             // init disabled state on load, no animation
-            updateButtonState(clamp(parseInt(input.value, 10)));
+            updateButtonState(clamp(parseInt(inputin.value, 10)));
         })();
     </script>
 </body>

@@ -173,7 +173,7 @@ def submission_nonsn():
                 conn.commit()
             cur.execute(
                 "INSERT INTO mutasi (date, serial, initial, destination, info, name, item, item_store_name) VALUES(%s,%s,%s,%s,%s,%s,%s,%s);",
-                (date.strftime("%Y-%m-%d %H:%M:%S"),"-- NON SN --",initial,"IT",info,name,types,"PARTS",)                
+                (date.strftime("%Y-%m-%d %H:%M:%S"),("-- NON SN -- "+types.upper()),initial.upper(),"IT",(info.upper()+"Quantity: "+qty),name.upper(),types.upper(),"PARTS",)                
             )
             conn.commit()
 
@@ -356,25 +356,32 @@ def submission_outnonsn():
     cur = conn.cursor()
     if request.method == "POST":
         types = request.form.get("item")
-        qty = request.form.get("qtyout_nonsn")
+        qty = request.form.get("qty-input-outnonsn")
         username = request.form.get("usernameout_nonsn")
         info = request.form.get("commentout_nonsn")
         store = request.form.get("storeout_nonsn")
         date = datetime.now(timezone(timedelta(hours=8)))
+        print(f"quantity out non sn: {qty}")
         cur.execute(
-            "SELECT qty FROM asset_data_nonsn WHERE types = %s;",
+            "SELECT qty FROM asset_data_nonsn WHERE type = %s;",
             (types,)
         )
         data_qty = cur.fetchall()
         
-        print(f"data qty = {data_qty}")
-        if (int(data_qty[0][0])<int(qty)):
+        
+        if (int(data_qty[0][0])<int(qty) or int(data_qty[0][0])==0):
             flash("Jumlah yang dikeluarkan lebih besar dari yang tersedia","error")
         else:
             cur.execute(
                 "INSERT INTO mutasi (date,serial, initial, destination, info, name, item, item_store_name) VALUES(%s,%s,%s,%s,%s,%s,%s,%s);",
-                (date.strftime("%Y-%m-%d %H:%M:%S"),"non-SN","IT",store.upper(),(info.upper()+qty),username.upper(),types.upper(), "Backup",)
+                (date.strftime("%Y-%m-%d %H:%M:%S"),("-- NON SN -- "+types.upper()),"IT",store.upper(),(info.upper()+"Quantity: "+qty),username.upper(),types.upper(), "Backup",)
             )
+            conn.commit()
+            cur.execute(
+                "UPDATE asset_data_nonsn SET qty = qty - %s WHERE type = %s;",
+                (int(qty),types.upper(),)
+            )
+            conn.commit()
         print(f"{types}, {qty}, {username}, {info}")
         return(redirect(url_for("views.home",tab="OUT")))
            
