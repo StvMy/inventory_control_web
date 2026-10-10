@@ -135,33 +135,32 @@
                                     <form style="display:flex;align-items:center;gap:6px;width:90%;">
                                         <span style="flex:1;">{{list[1]}} | {{list[3]}} | {{list[2]}}</span>
                                         <input type="hidden" name="sn" value="{{list[1]}}">
-                                        {% if list[4] == false %}  
-                                            <button type="submit" class="btn-lock" formaction="/data/lock" formmethod="POST">LOCK</button> 
-                                        {% else %}
-                                            <i class="material-icons">lock</i>
-                                            <button type="submit" class="btn-unlock" formaction="/data/lock" formmethod="POST">UNLOCK</button>
-                                        {% endif %}
-                                        {% if list[1] not in pr_sn_list %}
-                                            <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>      
-                                        {% endif %}
-                                        <button 
-                                            type="button" 
-                                            class="btn-delete triggerdatdel-btn"
-                                            data-sn = {{list[1]}}
-                                            data-store = {{list[3]}}
-                                            data-item = {{list[0]}}>
-                                            DELETE
-                                        </button>
-                                        <button 
-                                            type="button"
-                                            class="btn-edit triggerdat-btn"
-                                            data-type="{{list[0]}}"
-                                            data-sn="{{list[1]}}"
-                                            data-info="{{list[2]}}"
-                                            data-store="{{list[3]}}">
-                                            EDIT
-                                        </button>
-
+                                            {% if list[4] == false %}  
+                                                <button type="submit" class="btn-lock" formaction="/data/lock" formmethod="POST">LOCK</button> 
+                                            {% else %}
+                                                <i class="material-icons">lock</i>
+                                                <button type="submit" class="btn-unlock" formaction="/data/lock" formmethod="POST">UNLOCK</button>
+                                            {% endif %}
+                                            {% if list[1] not in pr_sn_list %}
+                                                <button type="submit" class="btn-pr" formaction="/data/addPR"  formmethod="POST">ADD PR</button>      
+                                            {% endif %}
+                                            <button 
+                                                type="button" 
+                                                class="btn-delete triggerdatdel-btn"
+                                                data-sn = {{list[1]}}
+                                                data-store = {{list[3]}}
+                                                data-item = {{list[0]}}>
+                                                DELETE
+                                            </button>
+                                            <button 
+                                                type="button"
+                                                class="btn-edit triggerdat-btn"
+                                                data-type="{{list[0]}}"
+                                                data-sn="{{list[1]}}"
+                                                data-info="{{list[2]}}"
+                                                data-store="{{list[3]}}">
+                                                EDIT
+                                            </button>
                                     </form>
                                 </td>
                             </tr>
@@ -244,20 +243,20 @@
                         {% if list[0] == type[0] %}
                             <tr style="padding: 0%;" class="{% if list[4] == 'DONE'%}row-in{% else %}row-out{% endif %}">
                                 <td style="width: 17%;">
-                                    <input type="text" value="{{type[0].upper()}}"> 
+                                    {{type[0].upper()}}
                                 </td> 
                                 <td>
                                     <input type="text" value="{{list[5]}}">
                                 </td>              
                                 <td >         
-                                    <form action="" method="POST" style="display:flex;align-items:center;gap:6px;width:100%;">
-                                        <input type="text" name="data" value="{{list[1]}} | {{list[3]}} | {{list[2]}}" readonly>
-                                        <input type="text" name="status" value="{{list[4]}}">
+                                    <form style="display:flex;align-items:center;gap:6px;width:100%;">
+                                        {{list[1]}} | {{list[3]}} | {{list[2]}}
+                                        {{list[4]}}
                                         <input type="hidden" name="sn" value="{{list[1]}}">
-                                        {% if list[4] == "PENDING" %}
-                                            <button type="submit" class="btn-edit" formaction="/data/complete_pr" formmethod="POST">SUDAH PR</button>
-                                        {% endif %}  
-                                        <button type="submit" class="btn-delete" formaction="/data/delete_PR" formmethod="POST" >DELETE</button>  
+                                            {% if list[4] == "PENDING" %}
+                                                <button type="submit" class="btn-edit" formaction="/data/complete_pr" formmethod="POST">SUDAH PR</button>
+                                            {% endif %}  
+                                            <button type="submit" class="btn-delete" formaction="/data/delete_PR" formmethod="POST" >DELETE</button>  
                                     </form>                                       
                                 </td>
                             </tr>
